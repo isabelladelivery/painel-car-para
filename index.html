@@ -207,19 +207,15 @@
 //  Como obter: abra a planilha, clique em cada aba,
 //  copie o número após "gid=" na URL do navegador.
 // ════════════════════════════════════════════════════════════
-const PUBLISHED_ID = '2PACX-1vQOzYCHtk213cKZ9VBqXfW1N92oCaRYT3RhY_vm39lz6Zq7QkA4ZcdypnNh-xD94eJfCFJ9Bmeeu7IX';
-const GIDS = {
-  metas: '863005006',
-  plano: '688288819',
-  pmo:   '1513083131',
-};
+// Cole aqui a URL do Web App gerada pelo Google Apps Script:
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxr4o-rRdXOyDUF9dqpDMqL3uG30ptVx1IWCourdZWwyUqbZM0Y5ThymKTyUSCEX8mdOA/exec';
 // ════════════════════════════════════════════════════════════
 
 // dados em memória
 let DATA = { metas: [], plano: [], pmo: [] };
 
-function csvUrl(gid) {
-  return `https://docs.google.com/spreadsheets/d/e/${PUBLISHED_ID}/pub?gid=${gid}&single=true&output=csv`;
+function sheetUrl(sheetName) {
+  return `${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(sheetName)}`;
 }
 
 // ── Utils ──────────────────────────────────────────────────
@@ -432,15 +428,13 @@ function resetFiltersPmo() {
 }
 
 // ── FETCH & PARSE ──────────────────────────────────────────
-async function fetchCsv(gid, name) {
-  if (gid.includes('COLE_AQUI')) {
-    throw new Error(`GID da aba "${name}" não configurado.`);
+async function fetchSheet(sheetName) {
+  if (APPS_SCRIPT_URL.includes('COLE_AQUI')) {
+    throw new Error(`URL do Apps Script não configurada. Veja o LEIA-ME.txt.`);
   }
-  const res = await fetch(csvUrl(gid));
-  if (!res.ok) throw new Error(`Erro HTTP ${res.status} ao carregar "${name}"`);
-  const text = await res.text();
-  const result = Papa.parse(text, { header: true, skipEmptyLines: true });
-  return result.data;
+  const res = await fetch(sheetUrl(sheetName));
+  if (!res.ok) throw new Error(`Erro HTTP ${res.status} ao carregar "${sheetName}"`);
+  return res.json();
 }
 
 async function loadAll() {
@@ -448,7 +442,7 @@ async function loadAll() {
 
   // METAS
   try {
-    const rows = await fetchCsv(GIDS.metas, 'Metas');
+    const rows = await fetchSheet('Metas');
     DATA.metas = rows;
     renderMetas(rows);
     document.getElementById('loading-metas').style.display = 'none';
@@ -460,7 +454,7 @@ async function loadAll() {
 
   // PLANO
   try {
-    const rows = await fetchCsv(GIDS.plano, 'Plano Detalhado');
+    const rows = await fetchSheet('Plano Detalhado');
     parsePlano(rows);
     renderPlano();
     document.getElementById('loading-plano').style.display = 'none';
@@ -472,7 +466,7 @@ async function loadAll() {
 
   // PMO
   try {
-    const rows = await fetchCsv(GIDS.pmo, 'PMO Operacional');
+    const rows = await fetchSheet('PMO Operacional');
     parsePmo(rows);
     renderPmo();
     document.getElementById('loading-pmo').style.display = 'none';
