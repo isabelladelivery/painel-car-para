@@ -207,7 +207,7 @@
 //  Como obter: abra a planilha, clique em cada aba,
 //  copie o número após "gid=" na URL do navegador.
 // ════════════════════════════════════════════════════════════
-const SHEET_ID = '1wrE_GeAMzpcZ6bzXsMy9bAC2_wNw2ayjzq-HFi2We4o';
+const PUBLISHED_ID = '2PACX-1vQOzYCHtk213cKZ9VBqXfW1N92oCaRYT3RhY_vm39lz6Zq7QkA4ZcdypnNh-xD94eJfCFJ9Bmeeu7IX';
 const GIDS = {
   metas: '863005006',
   plano: '688288819',
@@ -219,7 +219,7 @@ const GIDS = {
 let DATA = { metas: [], plano: [], pmo: [] };
 
 function csvUrl(gid) {
-  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/pub?gid=${gid}&single=true&output=csv`;
+  return `https://docs.google.com/spreadsheets/d/e/${PUBLISHED_ID}/pub?gid=${gid}&single=true&output=csv`;
 }
 
 // ── Utils ──────────────────────────────────────────────────
