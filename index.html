@@ -137,10 +137,12 @@
       <label>Status:</label>
       <select id="filter-status-plano" onchange="renderPlano()">
         <option value="">Todos</option>
+        <option>Em andamento, conforme esperado</option>
+        <option>Em andamento, com pontos de atenção</option>
+        <option>Em atraso ou com bloqueios críticos</option>
+        <option>Não iniciado</option>
         <option>Concluído</option>
-        <option>Em Andamento</option>
-        <option>Atrasado</option>
-        <option>Não Iniciado</option>
+        <option>Backlog</option>
       </select>
       <button class="reset" onclick="resetFiltersPlano()">Limpar filtros</button>
     </div>
@@ -181,6 +183,10 @@
         <input type="checkbox" id="show-sub" onchange="renderPmo()" />
         Mostrar sub-ações
       </label>
+      <label>
+        <input type="checkbox" id="show-concluidos" onchange="renderPmo()" />
+        Mostrar concluídos
+      </label>
       <button class="reset" onclick="resetFiltersPmo()">Limpar filtros</button>
     </div>
     <div style="overflow-x:auto">
@@ -192,7 +198,7 @@
             <th style="width:100px">Responsável</th>
             <th style="width:90px">Prazo</th>
             <th style="width:160px">Status</th>
-            <th>Próximos Passos</th>
+            <th>Próximos Passos / Observações</th>
           </tr>
         </thead>
         <tbody id="pmo-tbody"></tbody>
@@ -227,13 +233,13 @@ function showTab(name) {
 }
 
 function statusBadgePlano(s) {
-  const map = {
-    'Concluído':    'badge-blue',
-    'Em Andamento': 'badge-green',
-    'Atrasado':     'badge-red',
-    'Não Iniciado': 'badge-gray',
-  };
-  return `<span class="badge ${map[s] || 'badge-gray'}">${s || '–'}</span>`;
+  s = (s || '').trim();
+  if (s.includes('conforme esperado'))             return `<span class="badge badge-green">${s}</span>`;
+  if (s.includes('pontos de atenção'))             return `<span class="badge badge-yellow">${s}</span>`;
+  if (s.includes('atraso') || s.includes('bloqueios')) return `<span class="badge badge-red">${s}</span>`;
+  if (s === 'Concluído')                           return `<span class="badge badge-blue">${s}</span>`;
+  if (s === 'Não iniciado' || s === 'Backlog')     return `<span class="badge badge-gray">${s}</span>`;
+  return `<span class="badge badge-gray">${s || '–'}</span>`;
 }
 
 function statusBadgePmo(s) {
@@ -389,8 +395,9 @@ function parsePmo(rows) {
 }
 
 function renderPmo() {
-  const filterStatus = document.getElementById('filter-status-pmo').value;
-  const showSub      = document.getElementById('show-sub').checked;
+  const filterStatus    = document.getElementById('filter-status-pmo').value;
+  const showSub         = document.getElementById('show-sub').checked;
+  const showConcluidos  = document.getElementById('show-concluidos').checked;
   const tbody = document.getElementById('pmo-tbody');
   tbody.innerHTML = '';
   let lastEixo = '';
@@ -399,6 +406,7 @@ function renderPmo() {
     if (r._isHeader) return;
     const isSub = r.tipo === 'sub';
     if (!showSub && isSub) return;
+    if (!showConcluidos && r.status.trim() === 'Concluído') return;
     if (filterStatus && r.status.trim() !== filterStatus.trim()) return;
 
     if (r._eixo !== lastEixo) {
@@ -424,6 +432,7 @@ function renderPmo() {
 function resetFiltersPmo() {
   document.getElementById('filter-status-pmo').value = '';
   document.getElementById('show-sub').checked = false;
+  document.getElementById('show-concluidos').checked = false;
   renderPmo();
 }
 
