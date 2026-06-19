@@ -168,25 +168,17 @@
 <div id="tab-pmo" class="tab-panel">
   <div class="loading" id="loading-pmo">Carregando PMO...</div>
   <div id="pmo-content" style="display:none">
-    <div class="filter-bar">
-      <label>Status:</label>
-      <select id="filter-status-pmo" onchange="renderPmo()">
-        <option value="">Todos</option>
-        <option>Em andamento, conforme esperado</option>
-        <option>Em andamento, com pontos de atenção</option>
-        <option>Em atraso ou com bloqueios críticos​</option>
-        <option>Concluído</option>
-        <option>Não iniciado</option>
-        <option>Backlog</option>
-      </select>
-      <label>
-        <input type="checkbox" id="show-sub" onchange="renderPmo()" />
-        Mostrar sub-ações
-      </label>
-      <label>
-        <input type="checkbox" id="show-concluidos" onchange="renderPmo()" />
-        Mostrar concluídos
-      </label>
+    <div class="filter-bar" style="flex-wrap:wrap; gap:12px 20px;">
+      <span style="font-size:12px;color:#666;font-weight:600;">Filtrar por status:</span>
+      <label><input type="checkbox" class="pmo-status-filter" value="Em andamento, conforme esperado" onchange="renderPmo()" checked /> ✅ Conforme esperado</label>
+      <label><input type="checkbox" class="pmo-status-filter" value="Em andamento, com pontos de atenção" onchange="renderPmo()" checked /> ⚠️ Pontos de atenção</label>
+      <label><input type="checkbox" class="pmo-status-filter" value="Em atraso ou com bloqueios críticos" onchange="renderPmo()" checked /> 🔴 Bloqueios críticos</label>
+      <label><input type="checkbox" class="pmo-status-filter" value="Não iniciado" onchange="renderPmo()" checked /> ⬜ Não iniciado</label>
+      <label><input type="checkbox" class="pmo-status-filter" value="Backlog" onchange="renderPmo()" checked /> 📋 Backlog</label>
+      <label><input type="checkbox" class="pmo-status-filter" value="Concluído" onchange="renderPmo()" /> ✔️ Concluído</label>
+      <span style="border-left:1px solid #ddd; padding-left:16px;">
+        <label><input type="checkbox" id="show-sub" onchange="renderPmo()" /> Sub-ações</label>
+      </span>
       <button class="reset" onclick="resetFiltersPmo()">Limpar filtros</button>
     </div>
     <div style="overflow-x:auto">
@@ -395,9 +387,8 @@ function parsePmo(rows) {
 }
 
 function renderPmo() {
-  const filterStatus    = document.getElementById('filter-status-pmo').value;
-  const showSub         = document.getElementById('show-sub').checked;
-  const showConcluidos  = document.getElementById('show-concluidos').checked;
+  const showSub = document.getElementById('show-sub').checked;
+  const activeStatuses = Array.from(document.querySelectorAll('.pmo-status-filter:checked')).map(cb => cb.value.toLowerCase());
   const tbody = document.getElementById('pmo-tbody');
   tbody.innerHTML = '';
   let lastEixo = '';
@@ -406,8 +397,7 @@ function renderPmo() {
     if (r._isHeader) return;
     const isSub = r.tipo === 'sub';
     if (!showSub && isSub) return;
-    if (!showConcluidos && r.status.trim() === 'Concluído') return;
-    if (filterStatus && r.status.trim() !== filterStatus.trim()) return;
+    if (activeStatuses.length > 0 && !activeStatuses.includes(r.status.trim().toLowerCase())) return;
 
     if (r._eixo !== lastEixo) {
       lastEixo = r._eixo;
@@ -430,9 +420,10 @@ function renderPmo() {
 }
 
 function resetFiltersPmo() {
-  document.getElementById('filter-status-pmo').value = '';
+  document.querySelectorAll('.pmo-status-filter').forEach(cb => {
+    cb.checked = cb.value !== 'Concluído';
+  });
   document.getElementById('show-sub').checked = false;
-  document.getElementById('show-concluidos').checked = false;
   renderPmo();
 }
 
