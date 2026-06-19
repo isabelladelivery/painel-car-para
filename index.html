@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel CAR Pará – SEMAS</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; background: #f5f5f5; color: #222; }
+
+    /* ── Layout ── */
+    header { background: #1a3a2a; color: #fff; padding: 18px 24px; }
+    header h1 { font-size: 18px; font-weight: 600; letter-spacing: 0.01em; }
+    header p  { font-size: 12px; color: #a8c8b4; margin-top: 3px; }
+
+    .tabs { display: flex; background: #fff; border-bottom: 2px solid #e0e0e0; padding: 0 24px; }
+    .tab-btn {
+      padding: 12px 20px; font-size: 13px; font-weight: 500; cursor: pointer;
+      border: none; background: none; color: #666; border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover { color: #1a3a2a; }
+    .tab-btn.active { color: #1a3a2a; border-bottom-color: #1a3a2a; }
+
+    .tab-panel { display: none; padding: 24px; }
+    .tab-panel.active { display: block; }
+
+    /* ── Loading / error ── */
+    .loading { text-align: center; padding: 48px; color: #888; font-size: 13px; }
+    .error-msg { background: #fff3cd; border-left: 4px solid #f59e0b; padding: 12px 16px;
+      margin-bottom: 16px; border-radius: 4px; font-size: 13px; }
+
+    /* ── Config banner ── */
+    .config-banner { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+      padding: 16px 20px; margin-bottom: 24px; }
+    .config-banner h3 { font-size: 13px; font-weight: 600; color: #1d4ed8; margin-bottom: 8px; }
+    .config-banner ol { margin-left: 18px; line-height: 1.8; color: #333; }
+    .config-banner code { background: #dbeafe; padding: 1px 5px; border-radius: 3px; font-size: 12px; }
+
+    /* ── METAS ── */
+    .metas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .meta-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .meta-card .cat { font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: #888; margin-bottom: 6px; }
+    .meta-card .label { font-size: 13px; font-weight: 500; margin-bottom: 12px; line-height: 1.4; }
+    .meta-card .numbers { display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 8px; }
+    .meta-card .atual { font-size: 22px; font-weight: 700; }
+    .meta-card .total { font-size: 12px; color: #888; }
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; transition: width .5s; }
+    .fill-green  { background: #22c55e; }
+    .fill-yellow { background: #f59e0b; }
+    .fill-red    { background: #ef4444; }
+    .fill-gray   { background: #9ca3af; }
+
+    /* ── TABLES ── */
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .filter-bar label { font-size: 12px; color: #666; }
+    .filter-bar select {
+      font-size: 12px; padding: 5px 10px; border: 1px solid #d1d5db;
+      border-radius: 5px; background: #fff; cursor: pointer;
+    }
+    .filter-bar .reset { font-size: 12px; color: #1a3a2a; cursor: pointer;
+      text-decoration: underline; background: none; border: none; padding: 0; }
+
+    table { width: 100%; border-collapse: collapse; background: #fff;
+      border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    thead tr { background: #1a3a2a; color: #fff; }
+    th { padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600;
+      white-space: nowrap; }
+    td { padding: 9px 12px; font-size: 12px; border-bottom: 1px solid #f0f0f0;
+      vertical-align: top; line-height: 1.45; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f9fafb; }
+
+    /* eixo header row */
+    .eixo-row td { background: #f0f4f0; font-weight: 700; font-size: 12px;
+      color: #1a3a2a; padding: 8px 12px; }
+
+    /* sub-row (PMO) */
+    .sub-row td:first-child { padding-left: 24px; color: #666; }
+    .sub-row { background: #fafafa; }
+    .sub-row td { color: #555; }
+    .toggle-sub { font-size: 11px; color: #1a3a2a; cursor: pointer; text-decoration: underline;
+      background: none; border: none; padding: 0; white-space: nowrap; }
+
+    /* ── STATUS BADGES ── */
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px;
+      font-weight: 500; white-space: nowrap; }
+    .badge-green  { background: #dcfce7; color: #15803d; }
+    .badge-yellow { background: #fef9c3; color: #92400e; }
+    .badge-red    { background: #fee2e2; color: #b91c1c; }
+    .badge-gray   { background: #f3f4f6; color: #6b7280; }
+    .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+
+    /* responsive */
+    @media (max-width: 640px) {
+      .tabs { overflow-x: auto; }
+      .tab-btn { padding: 10px 14px; font-size: 12px; }
+      th, td { font-size: 11px; padding: 7px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Painel de Regularização Ambiental – CAR Pará</h1>
+  <p id="last-updated">Carregando dados...</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('metas')">📊 Metas</button>
+  <button class="tab-btn" onclick="showTab('plano')">📋 Plano Detalhado</button>
+  <button class="tab-btn" onclick="showTab('pmo')">⚙️ PMO Operacional</button>
+</div>
+
+<!-- ══════════════ METAS ══════════════ -->
+<div id="tab-metas" class="tab-panel active">
+  <div class="loading" id="loading-metas">Carregando metas...</div>
+  <div id="metas-content" style="display:none">
+    <div class="metas-grid" id="metas-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════ PLANO DETALHADO ══════════════ -->
+<div id="tab-plano" class="tab-panel">
+  <div class="loading" id="loading-plano">Carregando plano...</div>
+  <div id="plano-content" style="display:none">
+    <div class="filter-bar">
+      <label>Eixo:</label>
+      <select id="filter-eixo" onchange="renderPlano()">
+        <option value="">Todos</option>
+      </select>
+      <label>Status:</label>
+      <select id="filter-status-plano" onchange="renderPlano()">
+        <option value="">Todos</option>
+        <option>Concluído</option>
+        <option>Em Andamento</option>
+        <option>Atrasado</option>
+        <option>Não Iniciado</option>
+      </select>
+      <button class="reset" onclick="resetFiltersPlano()">Limpar filtros</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table id="plano-table">
+        <thead>
+          <tr>
+            <th style="width:60px">Nº</th>
+            <th>Entrega / Ação</th>
+            <th style="width:90px">Prazo</th>
+            <th style="width:130px">Status</th>
+            <th style="width:110px">Responsável</th>
+            <th style="width:70px">Prior.</th>
+          </tr>
+        </thead>
+        <tbody id="plano-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PMO OPERACIONAL ══════════════ -->
+<div id="tab-pmo" class="tab-panel">
+  <div class="loading" id="loading-pmo">Carregando PMO...</div>
+  <div id="pmo-content" style="display:none">
+    <div class="filter-bar">
+      <label>Status:</label>
+      <select id="filter-status-pmo" onchange="renderPmo()">
+        <option value="">Todos</option>
+        <option>Em andamento, conforme esperado</option>
+        <option>Em andamento, com pontos de atenção</option>
+        <option>Em atraso ou com bloqueios críticos​</option>
+        <option>Concluído</option>
+        <option>Não iniciado</option>
+        <option>Backlog</option>
+      </select>
+      <label>
+        <input type="checkbox" id="show-sub" onchange="renderPmo()" />
+        Mostrar sub-ações
+      </label>
+      <button class="reset" onclick="resetFiltersPmo()">Limpar filtros</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table id="pmo-table">
+        <thead>
+          <tr>
+            <th style="width:70px">Ação</th>
+            <th>Entrega Prioritária</th>
+            <th style="width:100px">Responsável</th>
+            <th style="width:90px">Prazo</th>
+            <th style="width:160px">Status</th>
+            <th>Próximos Passos</th>
+          </tr>
+        </thead>
+        <tbody id="pmo-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  CONFIGURAÇÃO – substitua os GIDs abaixo pelos da planilha
+//  Como obter: abra a planilha, clique em cada aba,
+//  copie o número após "gid=" na URL do navegador.
+// ════════════════════════════════════════════════════════════
+const SHEET_ID = '1wrE_GeAMzpcZ6bzXsMy9bAC2_wNw2ayjzq-HFi2We4o';
+const GIDS = {
+  metas: '863005006',
+  plano: '688288819',
+  pmo:   '1513083131',
+};
+// ════════════════════════════════════════════════════════════
+
+// dados em memória
+let DATA = { metas: [], plano: [], pmo: [] };
+
+function csvUrl(gid) {
+  return `https://docs.google.com/spreadsheets/d/${SHEET_ID}/pub?gid=${gid}&single=true&output=csv`;
+}
+
+// ── Utils ──────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function statusBadgePlano(s) {
+  const map = {
+    'Concluído':    'badge-blue',
+    'Em Andamento': 'badge-green',
+    'Atrasado':     'badge-red',
+    'Não Iniciado': 'badge-gray',
+  };
+  return `<span class="badge ${map[s] || 'badge-gray'}">${s || '–'}</span>`;
+}
+
+function statusBadgePmo(s) {
+  s = (s || '').trim();
+  if (s.includes('conforme esperado'))    return `<span class="badge badge-green">${s}</span>`;
+  if (s.includes('pontos de atenção'))    return `<span class="badge badge-yellow">${s}</span>`;
+  if (s.includes('atraso') || s.includes('bloqueios')) return `<span class="badge badge-red">${s}</span>`;
+  if (s === 'Concluído')                  return `<span class="badge badge-blue">${s}</span>`;
+  if (s === 'Não iniciado')               return `<span class="badge badge-gray">${s}</span>`;
+  if (s === 'Backlog')                    return `<span class="badge badge-gray">${s}</span>`;
+  return `<span class="badge badge-gray">${s || '–'}</span>`;
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── METAS ─────────────────────────────────────────────────
+function renderMetas(rows) {
+  const grid = document.getElementById('metas-grid');
+  grid.innerHTML = '';
+  rows.forEach(r => {
+    const alcancado = parseFloat(r.ALCANÇADO) || 0;
+    const meta      = parseFloat(r.META) || 0;
+    const limVerde  = parseFloat(r.LIM_VERDE) || meta;
+    const limAm     = parseFloat(r.LIM_AMARELO) || 0;
+    const pct       = meta > 0 ? Math.min(100, (alcancado / meta) * 100) : 0;
+    let fillClass = 'fill-gray';
+    if (meta > 0) {
+      if (alcancado >= limVerde) fillClass = 'fill-green';
+      else if (alcancado >= limAm) fillClass = 'fill-yellow';
+      else fillClass = 'fill-red';
+    }
+    grid.innerHTML += `
+      <div class="meta-card">
+        <div class="cat">${esc(r.CATEGORIA)}</div>
+        <div class="label">${esc(r.INDICADOR)}</div>
+        <div class="numbers">
+          <span class="atual">${alcancado.toLocaleString('pt-BR')}</span>
+          <span class="total">meta: ${meta > 0 ? meta.toLocaleString('pt-BR') : '–'}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill ${fillClass}" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  });
+}
+
+// ── PLANO DETALHADO ────────────────────────────────────────
+let planoData = [];   // parsed rows with eixo assigned
+let eixoOptions = [];
+
+function parsePlano(rows) {
+  planoData = [];
+  eixoOptions = [];
+  let currentEixo = '';
+  rows.forEach(r => {
+    const num = (r['Nº'] || '').trim();
+    const entrega = (r['ENTREGA / AÇÃO'] || '').trim();
+    // detect eixo header rows: Nº cell starts with "Eixo"
+    if (num.startsWith('Eixo') || entrega.startsWith('Eixo')) {
+      currentEixo = num.startsWith('Eixo') ? num : entrega;
+      if (!eixoOptions.includes(currentEixo)) eixoOptions.push(currentEixo);
+      planoData.push({ _eixo: currentEixo, _isHeader: true });
+    } else if (num || entrega) {
+      planoData.push({
+        num, entrega,
+        prazo: r['PRAZO'] || '',
+        status: r['STATUS'] || '',
+        responsavel: r['RESPONSÁVEL'] || '',
+        prioridade: r['PRIORIDADE'] || '',
+        _eixo: currentEixo,
+        _isHeader: false,
+      });
+    }
+  });
+
+  // populate eixo filter
+  const sel = document.getElementById('filter-eixo');
+  eixoOptions.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e;
+    // short label: "Eixo 1", "Eixo 2", ...
+    opt.textContent = e.split('–')[0].trim();
+    sel.appendChild(opt);
+  });
+}
+
+function renderPlano() {
+  const filterEixo   = document.getElementById('filter-eixo').value;
+  const filterStatus = document.getElementById('filter-status-plano').value;
+  const tbody = document.getElementById('plano-tbody');
+  tbody.innerHTML = '';
+
+  let lastEixo = '';
+  planoData.forEach(r => {
+    if (r._isHeader) return; // we'll add eixo rows manually below
+    if (filterEixo   && r._eixo   !== filterEixo)   return;
+    if (filterStatus && r.status  !== filterStatus)  return;
+    // insert eixo header when eixo changes
+    if (r._eixo !== lastEixo) {
+      lastEixo = r._eixo;
+      tbody.innerHTML += `<tr class="eixo-row"><td colspan="6">${esc(r._eixo)}</td></tr>`;
+    }
+    tbody.innerHTML += `<tr>
+      <td>${esc(r.num)}</td>
+      <td>${esc(r.entrega)}</td>
+      <td>${esc(r.prazo)}</td>
+      <td>${statusBadgePlano(r.status)}</td>
+      <td>${esc(r.responsavel)}</td>
+      <td>${esc(r.prioridade)}</td>
+    </tr>`;
+  });
+
+  if (!tbody.innerHTML) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:24px">Nenhum resultado para os filtros selecionados.</td></tr>';
+  }
+}
+
+function resetFiltersPlano() {
+  document.getElementById('filter-eixo').value = '';
+  document.getElementById('filter-status-plano').value = '';
+  renderPlano();
+}
+
+// ── PMO OPERACIONAL ────────────────────────────────────────
+let pmoData = [];
+
+function parsePmo(rows) {
+  pmoData = [];
+  let currentEixo = '';
+  rows.forEach(r => {
+    const acao    = (r['Ação STF'] || '').trim();
+    const entrega = (r['Entrega Prioritária'] || '').trim();
+    if (acao.startsWith('Eixo') || entrega.startsWith('Eixo')) {
+      currentEixo = acao.startsWith('Eixo') ? acao : entrega;
+      pmoData.push({ _eixo: currentEixo, _isHeader: true });
+    } else if (acao || entrega) {
+      pmoData.push({
+        acao,
+        entrega,
+        responsavel: r['Responsável'] || '',
+        equipe:      r['Equipe/Apoio'] || '',
+        prazo:       r['Prazo'] || '',
+        status:      r['Status'] || '',
+        comentario:  r['Comentário / Próximos Passos'] || '',
+        tipo:        (r['Tipo'] || '').toLowerCase(),
+        _eixo:       currentEixo,
+        _isHeader:   false,
+      });
+    }
+  });
+}
+
+function renderPmo() {
+  const filterStatus = document.getElementById('filter-status-pmo').value;
+  const showSub      = document.getElementById('show-sub').checked;
+  const tbody = document.getElementById('pmo-tbody');
+  tbody.innerHTML = '';
+  let lastEixo = '';
+
+  pmoData.forEach(r => {
+    if (r._isHeader) return;
+    const isSub = r.tipo === 'sub';
+    if (!showSub && isSub) return;
+    if (filterStatus && r.status.trim() !== filterStatus.trim()) return;
+
+    if (r._eixo !== lastEixo) {
+      lastEixo = r._eixo;
+      tbody.innerHTML += `<tr class="eixo-row"><td colspan="6">${esc(r._eixo)}</td></tr>`;
+    }
+    const rowClass = isSub ? 'sub-row' : '';
+    tbody.innerHTML += `<tr class="${rowClass}">
+      <td>${esc(r.acao)}</td>
+      <td>${esc(r.entrega)}</td>
+      <td>${esc(r.responsavel)}</td>
+      <td>${esc(r.prazo)}</td>
+      <td>${statusBadgePmo(r.status)}</td>
+      <td>${esc(r.comentario)}</td>
+    </tr>`;
+  });
+
+  if (!tbody.innerHTML) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:24px">Nenhum resultado para os filtros selecionados.</td></tr>';
+  }
+}
+
+function resetFiltersPmo() {
+  document.getElementById('filter-status-pmo').value = '';
+  document.getElementById('show-sub').checked = false;
+  renderPmo();
+}
+
+// ── FETCH & PARSE ──────────────────────────────────────────
+function fetchCsv(gid, name) {
+  const isPlaceholder = gid.includes('COLE_AQUI');
+  if (isPlaceholder) {
+    return Promise.reject(new Error(`GID da aba "${name}" não configurado. Veja as instruções no arquivo LEIA-ME.txt.`));
+  }
+  return new Promise((resolve, reject) => {
+    Papa.parse(csvUrl(gid), {
+      download: true,
+      header: true,
+      skipEmptyLines: true,
+      complete: r => resolve(r.data),
+      error: e => reject(e),
+    });
+  });
+}
+
+async function loadAll() {
+  const now = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+
+  // METAS
+  try {
+    const rows = await fetchCsv(GIDS.metas, 'Metas');
+    DATA.metas = rows;
+    renderMetas(rows);
+    document.getElementById('loading-metas').style.display = 'none';
+    document.getElementById('metas-content').style.display = 'block';
+  } catch(e) {
+    document.getElementById('loading-metas').innerHTML =
+      `<div class="error-msg">⚠️ ${e.message || 'Não foi possível carregar as metas.'}</div>`;
+  }
+
+  // PLANO
+  try {
+    const rows = await fetchCsv(GIDS.plano, 'Plano Detalhado');
+    parsePlano(rows);
+    renderPlano();
+    document.getElementById('loading-plano').style.display = 'none';
+    document.getElementById('plano-content').style.display = 'block';
+  } catch(e) {
+    document.getElementById('loading-plano').innerHTML =
+      `<div class="error-msg">⚠️ ${e.message || 'Não foi possível carregar o plano detalhado.'}</div>`;
+  }
+
+  // PMO
+  try {
+    const rows = await fetchCsv(GIDS.pmo, 'PMO Operacional');
+    parsePmo(rows);
+    renderPmo();
+    document.getElementById('loading-pmo').style.display = 'none';
+    document.getElementById('pmo-content').style.display = 'block';
+  } catch(e) {
+    document.getElementById('loading-pmo').innerHTML =
+      `<div class="error-msg">⚠️ ${e.message || 'Não foi possível carregar o PMO operacional.'}</div>`;
+  }
+
+  document.getElementById('last-updated').textContent = `Atualizado em: ${now}`;
+}
+
+loadAll();
+</script>
+</body>
+</html>
