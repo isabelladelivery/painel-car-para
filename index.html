@@ -58,16 +58,12 @@
 
     /* ── EIXO CARDS ── */
     .eixo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-    .eixo-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); border-top: 3px solid #22c55e; }
-    .eixo-card.tem-bloqueio { border-top-color: #ef4444; background: #fff9f9; }
-    .eixo-card.tem-atencao  { border-top-color: #f59e0b; background: #fffdf0; }
+    .eixo-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); border-top: 3px solid #1a3a2a; }
     .eixo-card .e-titulo { font-size: 11px; font-weight: 700; color: #1a3a2a; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; line-height: 1.4; }
     .eixo-card .e-concluido { font-size: 22px; font-weight: 700; color: #111; }
     .eixo-card .e-meta { font-size: 12px; color: #888; margin-bottom: 6px; }
     .eixo-card .e-bar { height: 4px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
     .eixo-card .e-bar-fill { height: 100%; background: #22c55e; border-radius: 99px; }
-    .eixo-card.tem-bloqueio .e-bar-fill { background: #ef4444; }
-    .eixo-card.tem-atencao  .e-bar-fill { background: #f59e0b; }
     .eixo-card .e-alertas { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
     .eixo-card .e-alerta { font-size: 11px; display: flex; align-items: center; gap: 5px; }
     .stat-num { font-weight: 700; }
@@ -478,15 +474,14 @@ function renderEixoStats() {
     const s = stats[e];
     const pct = s.total > 0 ? Math.round((s.concluido / s.total) * 100) : 0;
     const eixoNum = (e.match(/Eixo\s*\d+/i) || [e.split('–')[0].trim()])[0];
-    const cardCls = s.bloqueio > 0 ? 'tem-bloqueio' : s.atencao > 0 ? 'tem-atencao' : '';
-    return `<div class="eixo-card ${cardCls}">
+    return `<div class="eixo-card">
       <div class="e-titulo">${esc(eixoNum)}</div>
       <div class="e-concluido">${s.concluido}<span style="font-size:14px;font-weight:400;color:#888"> / ${s.total}</span></div>
       <div class="e-meta">ações concluídas</div>
       <div class="e-bar"><div class="e-bar-fill" style="width:${pct}%"></div></div>
       <div class="e-alertas">
-        ${s.bloqueio > 0 ? `<span class="e-alerta" style="color:#b91c1c">🔴 <strong>${s.bloqueio}</strong> com bloqueio crítico</span>` : ''}
-        ${s.atencao  > 0 ? `<span class="e-alerta" style="color:#92400e">⚠️ <strong>${s.atencao}</strong> com ponto de atenção</span>` : ''}
+        ${s.bloqueio > 0 ? `<span class="e-alerta" style="color:#b91c1c;font-weight:600">🔴 ${s.bloqueio} com bloqueio crítico</span>` : ''}
+        ${s.atencao  > 0 ? `<span class="e-alerta" style="color:#92400e;font-weight:600">⚠️ ${s.atencao} com ponto de atenção</span>` : ''}
         ${s.bloqueio === 0 && s.atencao === 0 ? `<span class="e-alerta" style="color:#15803d">✅ sem alertas</span>` : ''}
       </div>
     </div>`;
