@@ -56,15 +56,16 @@
     .fill-red    { background: #ef4444; }
     .fill-gray   { background: #9ca3af; }
 
-    /* ── EIXO STATS ── */
-    .eixo-stats { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-    .eixo-stats table { width: 100%; border-collapse: collapse; }
-    .eixo-stats th { background: #1a3a2a; color: #fff; font-size: 11px; font-weight: 600; padding: 8px 10px; text-align: center; white-space: nowrap; }
-    .eixo-stats th:first-child { text-align: left; }
-    .eixo-stats td { font-size: 12px; padding: 8px 10px; border-bottom: 1px solid #f0f0f0; text-align: center; }
-    .eixo-stats td:first-child { text-align: left; font-weight: 500; }
-    .eixo-stats tr:last-child td { border-bottom: none; }
-    .eixo-stats tr:hover td { background: #f9fafb; }
+    /* ── EIXO CARDS ── */
+    .eixo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .eixo-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); border-top: 3px solid #1a3a2a; }
+    .eixo-card .e-titulo { font-size: 11px; font-weight: 700; color: #1a3a2a; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; line-height: 1.4; }
+    .eixo-card .e-concluido { font-size: 22px; font-weight: 700; color: #111; }
+    .eixo-card .e-meta { font-size: 12px; color: #888; margin-bottom: 6px; }
+    .eixo-card .e-bar { height: 4px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+    .eixo-card .e-bar-fill { height: 100%; background: #22c55e; border-radius: 99px; }
+    .eixo-card .e-alertas { display: flex; gap: 10px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid #f0f0f0; }
+    .eixo-card .e-alerta { font-size: 11px; display: flex; align-items: center; gap: 4px; color: #555; }
     .stat-num { font-weight: 700; }
     .stat-green  { color: #15803d; }
     .stat-blue   { color: #1d4ed8; }
@@ -72,16 +73,14 @@
     .stat-red    { color: #b91c1c; }
     .stat-gray   { color: #6b7280; }
 
-    /* ── AGENDA DO MÊS ── */
-    .agenda-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
-    .agenda-card { background: #fff; border-radius: 8px; padding: 12px 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.08); border-left: 4px solid #60a5fa; }
-    .agenda-card.bloqueio { border-left-color: #ef4444; }
-    .agenda-card.atencao  { border-left-color: #f59e0b; }
-    .agenda-card .a-eixo { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 700; letter-spacing: .05em; margin-bottom: 4px; }
-    .agenda-card .a-titulo { font-size: 12px; font-weight: 500; line-height: 1.4; margin-bottom: 8px; }
-    .agenda-card .a-footer { display:flex; justify-content:space-between; align-items:center; }
-    .agenda-card .a-prazo { font-size: 11px; color: #666; }
+    /* ── ENTREGAS PREVISTAS ── */
+    .entregas-list { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); overflow: hidden; }
+    .entrega-item { display: flex; align-items: baseline; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #f0f0f0; }
+    .entregas-list .entrega-item:last-child { border-bottom: none; }
+    .entrega-item:hover { background: #f9fafb; }
+    .entrega-eixo { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing:.04em; white-space:nowrap; width: 60px; flex-shrink: 0; }
+    .entrega-titulo { font-size: 12px; color: #222; line-height: 1.45; flex: 1; }
+    .entrega-prazo { font-size: 11px; color: #888; white-space: nowrap; }
     .empty-state { text-align: center; padding: 24px; color: #888; font-size: 13px;
       background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
 
@@ -144,7 +143,7 @@
 <body>
 
 <header>
-  <h1>Painel de Regularização Ambiental – CAR Pará</h1>
+  <h1>Cadastro Ambiental Rural CAR – Pará</h1>
   <div class="header-right">
     <p id="last-updated">Carregando...</p>
     <span class="cache-badge" id="cache-badge"></span>
@@ -173,11 +172,11 @@
     <div class="section-divider">
       <div class="section-label" style="white-space:nowrap">📋 Situação por Eixo</div><hr />
     </div>
-    <div class="eixo-stats" id="eixo-stats"><div class="loading">Aguardando dados...</div></div>
+    <div class="eixo-grid" id="eixo-stats"><div class="loading">Aguardando dados...</div></div>
     <div class="section-divider">
-      <div class="section-label" style="white-space:nowrap">📅 Agenda do Mês</div><hr />
+      <div class="section-label" style="white-space:nowrap">📌 Entregas Previstas</div><hr />
     </div>
-    <p style="font-size:12px;color:#666;margin-bottom:12px;">Ações do Plano Detalhado com prazo no próximo mês ainda não concluídas.</p>
+    <p style="font-size:12px;color:#666;margin-bottom:12px;">Ações do Plano Detalhado com prazo no próximo mês ainda não concluídas. Atualizado automaticamente a cada mês.</p>
     <div id="agenda-mes"><div class="loading">Aguardando dados...</div></div>
   </div>
 </div>
@@ -249,16 +248,31 @@
 <!-- ══ BOAS PRÁTICAS ══ -->
 <div id="tab-praticas" class="tab-panel">
   <div class="bp-toolbar">
-    <p>Clique em qualquer card para editar. As alterações ficam salvas automaticamente neste navegador.</p>
+    <p>Esta aba reúne orientações para que a equipe da SEMAS mantenha o monitoramento do Plano Estadual - CAR/PA de forma consistente após o encerramento da consultoria.</p>
     <button class="btn-reset-bp" onclick="resetBp()">↩ Restaurar padrão</button>
     <button class="btn-download" onclick="downloadHTML()">⬇ Baixar HTML atualizado</button>
   </div>
   <div class="bp-grid" id="bp-grid">
 
     <div class="bp-card">
-      <h3>📅 Frequência de atualização</h3>
+      <h3>Como usar este painel</h3>
+      <div class="bp-body" contenteditable="true" data-bp-id="como-usar"
+        data-placeholder="Descreva como a equipe deve usar o painel...">
+        <ul style="padding-left:16px">
+          <li>Use <strong>Metas</strong> para acompanhar resultados globais e as entregas previstas para o próximo mês</li>
+          <li>Use o <strong>Plano Detalhado</strong> para rastrear cada ação e seu status por eixo</li>
+          <li>Use o <strong>PMO Operacional</strong> para a gestão tática semana a semana</li>
+          <li>Use <strong>Boas Práticas</strong> para consultar orientações de governança e rotinas da equipe</li>
+        </ul>
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
+    </div>
+
+    <div class="bp-card">
+      <h3>Frequência de atualização</h3>
       <div class="bp-body" contenteditable="true" data-bp-id="frequencia"
-        data-placeholder="Descreva aqui a frequência de atualização da planilha...">
+        data-placeholder="Descreva a frequência de atualização da planilha...">
         <ul style="padding-left:16px">
           <li>Atualizar a planilha Google Sheets ao menos <strong>uma vez por semana</strong></li>
           <li>Revisar os status do PMO Operacional antes de cada reunião de acompanhamento</li>
@@ -270,46 +284,13 @@
     </div>
 
     <div class="bp-card">
-      <h3>🔄 Como usar este painel</h3>
-      <div class="bp-body" contenteditable="true" data-bp-id="como-usar"
-        data-placeholder="Descreva como a equipe deve usar o painel...">
-        <ul style="padding-left:16px">
-          <li>Use <strong>Metas</strong> para acompanhar resultados e a Agenda do Mês</li>
-          <li>Use o <strong>Plano Detalhado</strong> para rastrear cada ação e seu status</li>
-          <li>Use o <strong>PMO Operacional</strong> para gestão tática semana a semana</li>
-          <li>Use <strong>Boas Práticas</strong> para orientações de governança e rotinas da equipe</li>
-        </ul>
-      </div>
-      <div class="bp-edit-hint">✏️ Clique para editar</div>
-      <div class="editing-indicator">Editando...</div>
-    </div>
-
-    <div class="bp-card">
-      <h3>⚠️ Como escalar bloqueios</h3>
-      <div class="bp-body" contenteditable="true" data-bp-id="bloqueios"
-        data-placeholder="Descreva o fluxo de escalada de bloqueios: quem acionar, em qual prazo e por qual canal...">
-      </div>
-      <div class="bp-edit-hint">✏️ Clique para editar</div>
-      <div class="editing-indicator">Editando...</div>
-    </div>
-
-    <div class="bp-card">
-      <h3>🤝 Reuniões de acompanhamento</h3>
-      <div class="bp-body" contenteditable="true" data-bp-id="reunioes"
-        data-placeholder="Descreva a estrutura das reuniões: participantes, pauta padrão, duração e periodicidade...">
-      </div>
-      <div class="bp-edit-hint">✏️ Clique para editar</div>
-      <div class="editing-indicator">Editando...</div>
-    </div>
-
-    <div class="bp-card">
-      <h3>📊 Como interpretar os status</h3>
+      <h3>Como interpretar os status</h3>
       <div class="bp-body" contenteditable="true" data-bp-id="status"
         data-placeholder="Explique o significado de cada status...">
         <ul style="padding-left:0;list-style:none">
           <li style="margin-bottom:6px"><span class="badge badge-green">Conforme esperado</span> — Execução dentro do prazo e escopo</li>
-          <li style="margin-bottom:6px"><span class="badge badge-yellow">Pontos de atenção</span> — Risco identificado; monitoramento próximo</li>
-          <li style="margin-bottom:6px"><span class="badge badge-red">Bloqueios críticos</span> — Bloqueada; requer decisão imediata</li>
+          <li style="margin-bottom:6px"><span class="badge badge-yellow">Pontos de atenção</span> — Risco identificado; requer monitoramento próximo</li>
+          <li style="margin-bottom:6px"><span class="badge badge-red">Bloqueios críticos</span> — Ação bloqueada; requer decisão imediata</li>
           <li style="margin-bottom:6px"><span class="badge badge-blue">Concluído</span> — Entrega finalizada e validada</li>
           <li><span class="badge badge-gray">Não iniciado / Backlog</span> — Ainda não começou</li>
         </ul>
@@ -319,13 +300,13 @@
     </div>
 
     <div class="bp-card">
-      <h3>📁 Gestão da planilha</h3>
+      <h3>Gestão da planilha</h3>
       <div class="bp-body" contenteditable="true" data-bp-id="planilha"
         data-placeholder="Adicione orientações sobre como manter a planilha...">
         <ul style="padding-left:16px">
-          <li>Não renomear as abas — os nomes são usados pelo painel</li>
+          <li>Não renomear as abas — os nomes são utilizados pelo painel</li>
           <li>Não excluir colunas existentes</li>
-          <li>Novos indicadores devem seguir o padrão de CATEGORIA e limites de cor</li>
+          <li>Novos indicadores devem seguir o padrão da coluna CATEGORIA e os limites de cor definidos</li>
         </ul>
       </div>
       <div class="bp-edit-hint">✏️ Clique para editar</div>
@@ -333,19 +314,9 @@
     </div>
 
     <div class="bp-card">
-      <h3>🌐 Problemas de conectividade</h3>
-      <div class="bp-body" contenteditable="true" data-bp-id="conectividade"
-        data-placeholder="Descreva o que fazer quando a internet estiver instável...">
-        O painel funciona mesmo sem internet (PWA). Ao abrir pela primeira vez com conexão, ele fica salvo no navegador para uso offline. Se os dados não atualizarem, conecte-se a uma rede melhor e recarregue a página.
-      </div>
-      <div class="bp-edit-hint">✏️ Clique para editar</div>
-      <div class="editing-indicator">Editando...</div>
-    </div>
-
-    <div class="bp-card">
-      <h3>📝 Lições aprendidas</h3>
-      <div class="bp-body" contenteditable="true" data-bp-id="licoes"
-        data-placeholder="Registre aqui os aprendizados do projeto — o que funcionou, o que foi difícil e como a equipe superou os obstáculos...">
+      <h3>Como escalar bloqueios</h3>
+      <div class="bp-body" contenteditable="true" data-bp-id="bloqueios"
+        data-placeholder="Descreva o fluxo de escalada de bloqueios: quem acionar, em qual prazo e por qual canal...">
       </div>
       <div class="bp-edit-hint">✏️ Clique para editar</div>
       <div class="editing-indicator">Editando...</div>
@@ -492,35 +463,36 @@ function renderEixoStats() {
   const container = document.getElementById('eixo-stats');
   if (!planoData.length) return;
   const stats = {};
+  const eixoOrder = [];
   planoData.forEach(r => {
-    if (r._isHeader || !r._eixo) return;
-    if (!stats[r._eixo]) stats[r._eixo] = {total:0,concluido:0,andamento:0,atencao:0,bloqueio:0,nao:0};
+    if (r._isHeader && r._eixo) { if (!stats[r._eixo]) { stats[r._eixo] = {total:0,concluido:0,atencao:0,bloqueio:0,nao:0}; eixoOrder.push(r._eixo); } return; }
+    if (!r._eixo || !stats[r._eixo]) return;
     const s = stats[r._eixo], norm = normalizeStatus(r.status);
     s.total++;
     if (isConcluido(r.status)) s.concluido++;
-    else if (norm.includes('conforme esperado')) s.andamento++;
     else if (norm.includes('pontos de')) s.atencao++;
     else if (norm.includes('atraso') || norm.includes('bloqueio')) s.bloqueio++;
     else s.nao++;
   });
-  const eixos = Object.keys(stats);
-  if (!eixos.length) { container.innerHTML = '<div class="empty-state">Sem dados.</div>'; return; }
-  let html = `<table><thead><tr>
-    <th>Eixo</th><th>Total</th>
-    <th style="color:#93c5fd">✔ Concluído</th><th style="color:#86efac">↗ Conforme</th>
-    <th style="color:#fde68a">⚠ Atenção</th><th style="color:#fca5a5">🔴 Bloqueio</th>
-    <th style="color:#d1d5db">○ Não iniciado</th>
-  </tr></thead><tbody>`;
-  eixos.forEach(e => {
-    const s = stats[e], label = e.split('–')[0].split('-')[0].trim();
-    html += `<tr><td>${esc(label)}</td><td><span class="stat-num">${s.total}</span></td>
-      <td><span class="stat-num stat-blue">${s.concluido}</span></td>
-      <td><span class="stat-num stat-green">${s.andamento}</span></td>
-      <td><span class="stat-num stat-yellow">${s.atencao}</span></td>
-      <td><span class="stat-num stat-red">${s.bloqueio}</span></td>
-      <td><span class="stat-num stat-gray">${s.nao}</span></td></tr>`;
-  });
-  container.innerHTML = html + '</tbody></table>';
+  if (!eixoOrder.length) { container.innerHTML = '<div class="empty-state">Sem dados.</div>'; return; }
+  container.innerHTML = eixoOrder.map(e => {
+    const s = stats[e];
+    const pct = s.total > 0 ? Math.round((s.concluido / s.total) * 100) : 0;
+    const label = e.replace(/^Eixo\s*\d+\s*[–\-]\s*/i, '').trim() || e;
+    const eixoNum = (e.match(/Eixo\s*(\d+)/i) || [])[0] || e.split('–')[0].trim();
+    const critico = s.atencao + s.bloqueio;
+    return `<div class="eixo-card">
+      <div class="e-titulo">${esc(eixoNum)}</div>
+      <div class="e-concluido">${s.concluido}<span style="font-size:14px;font-weight:400;color:#888"> / ${s.total}</span></div>
+      <div class="e-meta">ações concluídas</div>
+      <div class="e-bar"><div class="e-bar-fill" style="width:${pct}%"></div></div>
+      <div class="e-alertas">
+        ${s.atencao > 0  ? `<span class="e-alerta"><span style="color:#d97706;font-weight:700">${s.atencao}</span> com atenção</span>` : ''}
+        ${s.bloqueio > 0 ? `<span class="e-alerta"><span style="color:#b91c1c;font-weight:700">${s.bloqueio}</span> com bloqueio</span>` : ''}
+        ${critico === 0  ? `<span class="e-alerta" style="color:#15803d">✓ sem alertas</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderAgendaMes() {
@@ -529,15 +501,15 @@ function renderAgendaMes() {
     if (r._isHeader || isConcluido(r.status)) return false;
     return isProximoMes(parsePrazoMes(r.prazo));
   });
-  if (!items.length) { container.innerHTML = '<div class="empty-state">✅ Nenhuma ação com prazo no próximo mês.</div>'; return; }
-  let html = '<div class="agenda-grid">';
+  if (!items.length) { container.innerHTML = '<div class="empty-state">✅ Nenhuma entrega prevista para o próximo mês.</div>'; return; }
+  let html = '<div class="entregas-list">';
   items.forEach(r => {
-    const norm = normalizeStatus(r.status);
-    const cls  = (norm.includes('atraso') || norm.includes('bloqueio')) ? 'bloqueio' : norm.includes('pontos de') ? 'atencao' : '';
-    html += `<div class="agenda-card ${cls}">
-      <div class="a-eixo">${esc(r._eixo ? r._eixo.split('–')[0].split('-')[0].trim() : '')}</div>
-      <div class="a-titulo">${esc(r.entrega || r.num)}</div>
-      <div class="a-footer"><span class="a-prazo">📅 ${esc(r.prazo)}</span>${statusBadge(r.status)}</div>
+    const eixoNum = r._eixo ? (r._eixo.match(/Eixo\s*\d+/i) || [''])[0] : '';
+    html += `<div class="entrega-item">
+      <span class="entrega-eixo">${esc(eixoNum)}</span>
+      <span class="entrega-titulo">${esc(r.entrega || r.num)}</span>
+      <span class="entrega-prazo">${esc(r.prazo)}</span>
+      ${statusBadge(r.status)}
     </div>`;
   });
   container.innerHTML = html + '</div>';
