@@ -57,15 +57,15 @@
     .fill-gray   { background: #9ca3af; }
 
     /* ── EIXO CARDS ── */
-    .eixo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-    .eixo-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); border-top: 3px solid #1a3a2a; }
-    .eixo-card .e-titulo { font-size: 11px; font-weight: 700; color: #1a3a2a; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; line-height: 1.4; }
-    .eixo-card .e-concluido { font-size: 22px; font-weight: 700; color: #111; }
-    .eixo-card .e-meta { font-size: 12px; color: #888; margin-bottom: 6px; }
-    .eixo-card .e-bar { height: 4px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+    .eixo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    .eixo-card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); border-top: 3px solid #1a3a2a; }
+    .eixo-card .e-titulo { font-size: 12px; font-weight: 700; color: #1a3a2a; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 12px; line-height: 1.4; }
+    .eixo-card .e-concluido { font-size: 28px; font-weight: 700; color: #111; }
+    .eixo-card .e-meta { font-size: 13px; color: #888; margin-bottom: 8px; }
+    .eixo-card .e-bar { height: 5px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
     .eixo-card .e-bar-fill { height: 100%; background: #22c55e; border-radius: 99px; }
-    .eixo-card .e-alertas { display: flex; flex-direction: column; gap: 4px; padding-top: 8px; border-top: 1px solid #f0f0f0; }
-    .eixo-card .e-alerta { font-size: 11px; display: flex; align-items: center; gap: 5px; }
+    .eixo-card .e-alertas { display: flex; flex-direction: column; gap: 5px; padding-top: 10px; border-top: 1px solid #f0f0f0; }
+    .eixo-card .e-alerta { font-size: 12px; display: flex; align-items: center; gap: 5px; }
     .stat-num { font-weight: 700; }
     .stat-green  { color: #15803d; }
     .stat-blue   { color: #1d4ed8; }
@@ -164,6 +164,10 @@
     <div class="metas-group">
       <div class="section-label">🎯 Impacto</div>
       <div class="metas-grid" id="grid-impacto"></div>
+    </div>
+    <div class="metas-group">
+      <div class="section-label">⚙️ Operacional</div>
+      <div class="metas-grid" id="grid-operacional"></div>
     </div>
     <div class="section-divider">
       <div class="section-label" style="white-space:nowrap">⚙️ Execução Operacional</div><hr />
@@ -421,9 +425,9 @@ async function fetchSheet(name) {
 
 // ── METAS ─────────────────────────────────────────────────
 function renderMetas(rows) {
-  const grids = { impacto: document.getElementById('grid-impacto') };
-  const grid = document.getElementById('grid-impacto');
-  grid.innerHTML = '';
+  const gImpacto     = document.getElementById('grid-impacto');
+  const gOperacional = document.getElementById('grid-operacional');
+  gImpacto.innerHTML = ''; gOperacional.innerHTML = '';
 
   rows.filter(r => clean(r.INDICADOR)).forEach(r => {
     const alcancado = parseFloat(clean(r.ALCANÇADO).replace(',','.')) || 0;
@@ -431,6 +435,8 @@ function renderMetas(rows) {
     const limVerde  = parseFloat(clean(r.LIM_VERDE).replace(',','.')) || meta;
     const limAm     = parseFloat(clean(r.LIM_AMARELO).replace(',','.')) || 0;
     const pct       = meta > 0 ? Math.min(100, (alcancado / meta) * 100) : 0;
+    const isOp      = clean(r.CATEGORIA).toLowerCase().includes('operacional');
+    const tipo      = isOp ? 'operacional' : 'impacto';
 
     let fillClass = 'fill-gray';
     if (meta > 0) {
@@ -439,8 +445,8 @@ function renderMetas(rows) {
       else                         fillClass = 'fill-red';
     }
 
-    grid.innerHTML += `
-      <div class="meta-card impacto">
+    const card = `
+      <div class="meta-card ${tipo}">
         <div class="cat">${esc(r.CATEGORIA)}</div>
         <div class="label">${esc(r.INDICADOR)}</div>
         <div class="numbers">
@@ -449,9 +455,11 @@ function renderMetas(rows) {
         </div>
         <div class="progress-bar"><div class="progress-fill ${fillClass}" style="width:${pct}%"></div></div>
       </div>`;
+    (isOp ? gOperacional : gImpacto).innerHTML += card;
   });
 
-  if (!grid.children.length) grid.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador encontrado. Verifique a coluna CATEGORIA na planilha.</p>';
+  if (!gImpacto.children.length)     gImpacto.innerHTML     = '<p style="font-size:12px;color:#888">Nenhum indicador de impacto encontrado.</p>';
+  if (!gOperacional.children.length) gOperacional.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador operacional encontrado.</p>';
 }
 
 function renderEixoStats() {
