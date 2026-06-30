@@ -8,53 +8,75 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; background: #f5f5f5; color: #222; }
 
-    header { background: #1a3a2a; color: #fff; padding: 18px 24px; display:flex; justify-content:space-between; align-items:center; }
-    header h1 { font-size: 17px; font-weight: 600; }
-    header p  { font-size: 12px; color: #a8c8b4; }
+    header { background: #1a3a2a; color: #fff; padding: 16px 24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+    header h1 { font-size: 16px; font-weight: 600; }
+    .header-right { display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+    header p { font-size: 11px; color: #a8c8b4; }
+    .cache-badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; display:none; }
+    .cache-badge.live    { background: #166534; color: #bbf7d0; }
+    .cache-badge.cached  { background: #78350f; color: #fde68a; display:inline; }
+    .cache-badge.offline { background: #7f1d1d; color: #fecaca; display:inline; }
 
     .tabs { display: flex; background: #fff; border-bottom: 2px solid #e0e0e0; padding: 0 24px; overflow-x:auto; }
-    .tab-btn { padding: 12px 18px; font-size: 13px; font-weight: 500; cursor: pointer;
+    .tab-btn { padding: 12px 16px; font-size: 13px; font-weight: 500; cursor: pointer;
       border: none; background: none; color: #666; border-bottom: 2px solid transparent;
       margin-bottom: -2px; white-space:nowrap; transition: color .15s, border-color .15s; }
     .tab-btn:hover { color: #1a3a2a; }
     .tab-btn.active { color: #1a3a2a; border-bottom-color: #1a3a2a; }
-    .tab-btn.alert-tab { color: #b91c1c; }
-    .tab-btn.alert-tab.active { border-bottom-color: #b91c1c; }
 
-    .tab-panel { display: none; padding: 20px 24px; }
+    .tab-panel { display: none; padding: 20px 24px; max-width: 1400px; }
     .tab-panel.active { display: block; }
 
     .loading { text-align: center; padding: 48px; color: #888; font-size: 13px; }
     .error-msg { background: #fff3cd; border-left: 4px solid #f59e0b; padding: 12px 16px;
       margin-bottom: 16px; border-radius: 4px; font-size: 13px; }
+    .info-msg { background: #eff6ff; border-left: 4px solid #60a5fa; padding: 10px 14px;
+      margin-bottom: 14px; border-radius: 4px; font-size: 12px; color: #1e40af; }
 
-    /* ── METAS ── */
-    .section-title { font-size: 13px; font-weight: 700; color: #444; text-transform: uppercase;
-      letter-spacing: .05em; margin: 20px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #e0e0e0; }
-    .metas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
-    .meta-card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    /* ── SECTION HEADERS ── */
+    .section-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+      color: #fff; background: #1a3a2a; display: inline-block;
+      padding: 3px 10px; border-radius: 4px; margin-bottom: 12px; }
+    .section-divider { margin: 24px 0 16px; display:flex; align-items:center; gap:12px; }
+    .section-divider hr { flex:1; border:none; border-top: 1px solid #e0e0e0; }
+
+    /* ── META CARDS ── */
+    .metas-group { margin-bottom: 20px; }
+    .metas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+    .meta-card { background: #fff; border-radius: 8px; padding: 14px 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08); border-top: 3px solid #e0e0e0; }
+    .meta-card.impacto { border-top-color: #1a3a2a; }
+    .meta-card.operacional { border-top-color: #60a5fa; }
     .meta-card .cat { font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .06em; color: #888; margin-bottom: 5px; }
-    .meta-card .label { font-size: 13px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; }
+      letter-spacing: .06em; color: #888; margin-bottom: 4px; }
+    .meta-card .label { font-size: 13px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; color: #222; }
     .meta-card .numbers { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-    .meta-card .atual { font-size: 22px; font-weight: 700; }
+    .meta-card .atual { font-size: 24px; font-weight: 700; color: #111; }
     .meta-card .total { font-size: 12px; color: #888; }
-    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
+    .progress-bar { height: 5px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
     .progress-fill { height: 100%; border-radius: 99px; transition: width .5s; }
     .fill-green  { background: #22c55e; }
     .fill-yellow { background: #f59e0b; }
     .fill-red    { background: #ef4444; }
     .fill-gray   { background: #9ca3af; }
+    .meta-mini-stats { display: flex; gap: 8px; flex-wrap: wrap; border-top: 1px solid #f0f0f0; padding-top: 8px; }
+    .mini-stat { font-size: 11px; display:flex; align-items:center; gap:3px; }
+    .mini-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .dot-green  { background:#22c55e; }
+    .dot-blue   { background:#60a5fa; }
+    .dot-yellow { background:#f59e0b; }
+    .dot-red    { background:#ef4444; }
+    .dot-gray   { background:#9ca3af; }
 
-    /* eixo stats table */
+    /* ── EIXO STATS TABLE ── */
     .eixo-stats { background: #fff; border-radius: 8px; overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-top: 4px; }
+      box-shadow: 0 1px 3px rgba(0,0,0,.08); }
     .eixo-stats table { width: 100%; border-collapse: collapse; }
     .eixo-stats th { background: #1a3a2a; color: #fff; font-size: 11px; font-weight: 600;
       padding: 8px 10px; text-align: center; white-space: nowrap; }
     .eixo-stats th:first-child { text-align: left; }
-    .eixo-stats td { font-size: 12px; padding: 8px 10px; border-bottom: 1px solid #f0f0f0;
-      text-align: center; }
+    .eixo-stats td { font-size: 12px; padding: 8px 10px; border-bottom: 1px solid #f0f0f0; text-align: center; }
     .eixo-stats td:first-child { text-align: left; font-weight: 500; }
     .eixo-stats tr:last-child td { border-bottom: none; }
     .eixo-stats tr:hover td { background: #f9fafb; }
@@ -65,16 +87,29 @@
     .stat-red    { color: #b91c1c; }
     .stat-gray   { color: #6b7280; }
 
+    /* ── AGENDA DO MÊS ── */
+    .agenda-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+    .agenda-card { background: #fff; border-radius: 8px; padding: 12px 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08); border-left: 4px solid #60a5fa; }
+    .agenda-card.bloqueio { border-left-color: #ef4444; }
+    .agenda-card.atencao  { border-left-color: #f59e0b; }
+    .agenda-card .a-eixo { font-size: 10px; color: #888; text-transform: uppercase;
+      font-weight: 700; letter-spacing: .05em; margin-bottom: 4px; }
+    .agenda-card .a-titulo { font-size: 12px; font-weight: 500; line-height: 1.4; margin-bottom: 8px; }
+    .agenda-card .a-footer { display:flex; justify-content:space-between; align-items:center; }
+    .agenda-card .a-prazo { font-size: 11px; color: #666; }
+    .empty-state { text-align: center; padding: 24px; color: #888; font-size: 13px;
+      background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
     /* ── TABLES ── */
     .filter-bar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
     .filter-bar label { font-size: 12px; color: #555; display:flex; align-items:center; gap:4px; }
     .filter-bar select { font-size: 12px; padding: 5px 10px; border: 1px solid #d1d5db;
       border-radius: 5px; background: #fff; cursor: pointer; }
     .filter-bar .reset { font-size: 12px; color: #1a3a2a; cursor: pointer;
-      text-decoration: underline; background: none; border: none; padding: 0; margin-left: 4px; }
+      text-decoration: underline; background: none; border: none; padding: 0; }
     .filter-divider { border-left: 1px solid #ddd; height: 20px; margin: 0 4px; }
 
-    /* pills */
     .pill { font-size: 11px; padding: 4px 10px; border-radius: 99px; border: 1.5px solid #d1d5db;
       background: #fff; color: #555; cursor: pointer; transition: all .15s; white-space: nowrap; }
     .pill:hover { border-color: #9ca3af; }
@@ -94,10 +129,9 @@
     tbody tr:hover { background: #f9fafb; }
     .eixo-row td { background: #eef2ee; font-weight: 700; font-size: 11px;
       color: #1a3a2a; padding: 6px 12px; letter-spacing:.02em; }
-    .sub-row td { color: #555; background: #fafafa; }
     .sub-row td:first-child { padding-left: 22px; color: #888; }
+    .sub-row td { color: #666; font-style: italic; }
 
-    /* badges */
     .badge { display: inline-block; padding: 2px 7px; border-radius: 99px;
       font-size: 11px; font-weight: 500; white-space: nowrap; }
     .badge-green  { background: #dcfce7; color: #15803d; }
@@ -106,19 +140,20 @@
     .badge-gray   { background: #f3f4f6; color: #6b7280; }
     .badge-blue   { background: #dbeafe; color: #1d4ed8; }
 
-    /* ── ALERTAS ── */
-    .alert-section { margin-bottom: 24px; }
-    .alert-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .alert-header h2 { font-size: 14px; font-weight: 700; }
-    .alert-count { background: #b91c1c; color: #fff; border-radius: 99px;
-      font-size: 11px; font-weight: 700; padding: 2px 8px; }
-    .alert-count.yellow { background: #d97706; }
-    .alert-count.blue { background: #1d4ed8; }
-    .empty-state { text-align: center; padding: 24px; color: #888; font-size: 13px;
-      background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    /* ── BOAS PRÁTICAS ── */
+    .bp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .bp-card { background: #fff; border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .bp-card h3 { font-size: 13px; font-weight: 700; color: #1a3a2a; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px; }
+    .bp-card p, .bp-card li { font-size: 12px; color: #555; line-height: 1.6; }
+    .bp-card ul { padding-left: 16px; margin-top: 6px; }
+    .bp-card li { margin-bottom: 4px; }
+    .bp-placeholder { background: #f9fafb; border: 1.5px dashed #d1d5db; border-radius: 6px;
+      padding: 12px; margin-top: 10px; font-size: 11px; color: #9ca3af; font-style: italic; }
 
     @media (max-width: 640px) {
-      .tabs { overflow-x: auto; }
+      header { padding: 12px 16px; }
+      .tab-panel { padding: 16px; }
       th, td { font-size: 11px; padding: 6px 8px; }
     }
   </style>
@@ -127,23 +162,51 @@
 
 <header>
   <h1>Painel de Regularização Ambiental – CAR Pará</h1>
-  <p id="last-updated">Carregando...</p>
+  <div class="header-right">
+    <p id="last-updated">Carregando...</p>
+    <span class="cache-badge" id="cache-badge"></span>
+  </div>
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active"      onclick="showTab('metas', this)">📊 Metas</button>
-  <button class="tab-btn"             onclick="showTab('plano', this)">📋 Plano Detalhado</button>
-  <button class="tab-btn"             onclick="showTab('pmo',   this)">⚙️ PMO Operacional</button>
-  <button class="tab-btn alert-tab"   onclick="showTab('alertas', this)" id="tab-btn-alertas">⚠️ Alertas</button>
+  <button class="tab-btn active" onclick="showTab('metas',  this)">📊 Metas</button>
+  <button class="tab-btn"        onclick="showTab('plano',  this)">📋 Plano Detalhado</button>
+  <button class="tab-btn"        onclick="showTab('pmo',    this)">⚙️ PMO Operacional</button>
+  <button class="tab-btn"        onclick="showTab('praticas', this)">📘 Boas Práticas</button>
 </div>
 
 <!-- ══ METAS ══ -->
 <div id="tab-metas" class="tab-panel active">
   <div class="loading" id="loading-metas">Carregando metas...</div>
   <div id="metas-content" style="display:none">
-    <div class="metas-grid" id="metas-grid"></div>
-    <div class="section-title" style="margin-top:24px">Situação por Eixo – Plano Detalhado</div>
+
+    <!-- Indicadores de impacto -->
+    <div class="metas-group">
+      <div class="section-label">🎯 Impacto</div>
+      <div class="metas-grid" id="grid-impacto"></div>
+    </div>
+
+    <!-- Indicadores operacionais -->
+    <div class="metas-group">
+      <div class="section-label">⚙️ Operacional</div>
+      <div class="metas-grid" id="grid-operacional"></div>
+    </div>
+
+    <!-- Situação por eixo -->
+    <div class="section-divider">
+      <div class="section-label" style="white-space:nowrap">📋 Situação por Eixo</div>
+      <hr />
+    </div>
     <div class="eixo-stats" id="eixo-stats"><div class="loading">Aguardando dados do plano...</div></div>
+
+    <!-- Agenda do mês -->
+    <div class="section-divider">
+      <div class="section-label" style="white-space:nowrap">📅 Agenda do Mês</div>
+      <hr />
+    </div>
+    <p style="font-size:12px;color:#666;margin-bottom:12px;">Ações do Plano Detalhado com prazo no próximo mês e que ainda não foram concluídas.</p>
+    <div id="agenda-mes"><div class="loading">Aguardando dados do plano...</div></div>
+
   </div>
 </div>
 
@@ -176,7 +239,7 @@
           <th style="width:60px">Nº</th>
           <th>Entrega / Ação</th>
           <th style="width:90px">Prazo</th>
-          <th style="width:160px">Status</th>
+          <th style="width:180px">Status</th>
           <th style="width:70px">Prior.</th>
         </tr></thead>
         <tbody id="plano-tbody"></tbody>
@@ -191,7 +254,7 @@
   <div id="pmo-content" style="display:none">
     <div class="filter-bar">
       <span style="font-size:11px;color:#888;font-weight:600;white-space:nowrap;">VER APENAS:</span>
-      <button class="pill" data-color="green"  data-status="Em andamento, conforme esperado"    onclick="togglePill(this)">✅ Conforme esperado</button>
+      <button class="pill" data-color="green"  data-status="Em andamento, conforme esperado"     onclick="togglePill(this)">✅ Conforme esperado</button>
       <button class="pill" data-color="yellow" data-status="Em andamento, com pontos de atenção" onclick="togglePill(this)">⚠️ Pontos de atenção</button>
       <button class="pill" data-color="red"    data-status="Em atraso ou com bloqueios críticos" onclick="togglePill(this)">🔴 Bloqueios críticos</button>
       <button class="pill" data-color="gray"   data-status="Não iniciado"                        onclick="togglePill(this)">⬜ Não iniciado</button>
@@ -210,7 +273,7 @@
           <th>Entrega Prioritária</th>
           <th style="width:100px">Responsável</th>
           <th style="width:95px">Prazo</th>
-          <th style="width:170px">Status</th>
+          <th style="width:180px">Status</th>
           <th>Próximos Passos / Observações</th>
         </tr></thead>
         <tbody id="pmo-tbody"></tbody>
@@ -219,45 +282,76 @@
   </div>
 </div>
 
-<!-- ══ ALERTAS ══ -->
-<div id="tab-alertas" class="tab-panel">
-  <div class="loading" id="loading-alertas">Aguardando dados...</div>
-  <div id="alertas-content" style="display:none">
+<!-- ══ BOAS PRÁTICAS ══ -->
+<div id="tab-praticas" class="tab-panel">
+  <p style="font-size:13px;color:#555;margin-bottom:20px;line-height:1.6;">
+    Esta aba reúne orientações para que a equipe da SEMAS mantenha o monitoramento do plano de regularização ambiental de forma consistente após o encerramento da consultoria.
+  </p>
+  <div class="bp-grid">
 
-    <!-- Bloqueios críticos no PMO -->
-    <div class="alert-section">
-      <div class="alert-header">
-        <h2>🔴 Bloqueios críticos ativos</h2>
-        <span class="alert-count" id="count-bloqueios">0</span>
-      </div>
-      <div id="alertas-bloqueios"></div>
+    <div class="bp-card">
+      <h3>📅 Frequência de atualização</h3>
+      <ul>
+        <li>Atualizar a planilha Google Sheets ao menos <strong>uma vez por semana</strong></li>
+        <li>Revisar os status do PMO Operacional antes de cada reunião de acompanhamento</li>
+        <li>Atualizar o Plano Detalhado ao fim de cada mês</li>
+      </ul>
+      <div class="bp-placeholder">[ Adicionar calendário de reuniões fixas da equipe ]</div>
     </div>
 
-    <!-- Ações atrasadas no Plano -->
-    <div class="alert-section">
-      <div class="alert-header">
-        <h2>⏰ Ações atrasadas no Plano</h2>
-        <span class="alert-count" id="count-atrasadas">0</span>
-      </div>
-      <div id="alertas-atrasadas"></div>
+    <div class="bp-card">
+      <h3>🔄 Como usar este painel</h3>
+      <ul>
+        <li>Use a aba <strong>Metas</strong> para acompanhar resultados globais e a Agenda do Mês</li>
+        <li>Use o <strong>Plano Detalhado</strong> para rastrear cada ação e seu status</li>
+        <li>Use o <strong>PMO Operacional</strong> para gestão tática semana a semana</li>
+      </ul>
+      <div class="bp-placeholder">[ Adicionar vídeo ou guia rápido de uso da ferramenta ]</div>
     </div>
 
-    <!-- Próximo mês -->
-    <div class="alert-section">
-      <div class="alert-header">
-        <h2>📅 Vence no próximo mês</h2>
-        <span class="alert-count blue" id="count-proximo">0</span>
-      </div>
-      <div id="alertas-proximo"></div>
+    <div class="bp-card">
+      <h3>⚠️ Como escalar bloqueios</h3>
+      <div class="bp-placeholder">[ Descrever o fluxo interno da SEMAS para escalada de bloqueios — quem acionar, em qual prazo e por qual canal ]</div>
     </div>
 
-    <!-- Pontos de atenção PMO -->
-    <div class="alert-section">
-      <div class="alert-header">
-        <h2>⚠️ Em andamento com pontos de atenção</h2>
-        <span class="alert-count yellow" id="count-atencao">0</span>
-      </div>
-      <div id="alertas-atencao"></div>
+    <div class="bp-card">
+      <h3>🤝 Reuniões de acompanhamento</h3>
+      <div class="bp-placeholder">[ Descrever a estrutura das reuniões de monitoramento: participantes, pauta padrão, duração, periodicidade e como registrar decisões ]</div>
+    </div>
+
+    <div class="bp-card">
+      <h3>📊 Como interpretar os status</h3>
+      <ul>
+        <li><span class="badge badge-green">Conforme esperado</span> — Execução dentro do prazo e do escopo</li>
+        <li><span class="badge badge-yellow">Pontos de atenção</span> — Risco identificado; requer monitoramento próximo</li>
+        <li><span class="badge badge-red">Bloqueios críticos</span> — Ação bloqueada; requer decisão ou apoio imediato</li>
+        <li><span class="badge badge-blue">Concluído</span> — Entrega finalizada e validada</li>
+        <li><span class="badge badge-gray">Não iniciado / Backlog</span> — Ainda não começou</li>
+      </ul>
+    </div>
+
+    <div class="bp-card">
+      <h3>📁 Gestão da planilha</h3>
+      <ul>
+        <li>Não renomear as abas — os nomes são usados pelo painel</li>
+        <li>Não excluir colunas existentes</li>
+        <li>Novos indicadores devem seguir o padrão de CATEGORIA e limites de cor</li>
+      </ul>
+      <div class="bp-placeholder">[ Adicionar nome e contato do responsável pela manutenção da planilha ]</div>
+    </div>
+
+    <div class="bp-card">
+      <h3>🌐 Problemas de conectividade</h3>
+      <p>O painel salva automaticamente os últimos dados carregados. Se a internet estiver instável, ele exibirá os dados mais recentes disponíveis com a data do último carregamento.</p>
+      <ul style="margin-top:8px">
+        <li>Conecte-se a uma rede estável antes de abrir o painel</li>
+        <li>Se aparecer aviso de "dados do cache", recarregue a página quando a internet melhorar</li>
+      </ul>
+    </div>
+
+    <div class="bp-card">
+      <h3>📝 Lições aprendidas</h3>
+      <div class="bp-placeholder">[ Registrar aqui aprendizados do projeto — o que funcionou, o que foi difícil e como a equipe superou os obstáculos ]</div>
     </div>
 
   </div>
@@ -265,8 +359,8 @@
 
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxr4o-rRdXOyDUF9dqpDMqL3uG30ptVx1IWCourdZWwyUqbZM0Y5ThymKTyUSCEX8mdOA/exec';
+const CACHE_TTL = 12 * 60 * 60 * 1000; // 12 horas
 
-let DATA = { metas: [], plano: [], pmo: [] };
 let planoData = [];
 let eixoOptions = [];
 let pmoData = [];
@@ -292,39 +386,36 @@ function esc(str) {
 
 function statusBadge(s) {
   s = clean(s);
-  if (s.includes('conforme esperado'))              return `<span class="badge badge-green">${esc(s)}</span>`;
-  if (s.includes('pontos de'))                       return `<span class="badge badge-yellow">${esc(s)}</span>`;
+  if (s.includes('conforme esperado'))               return `<span class="badge badge-green">${esc(s)}</span>`;
+  if (s.includes('pontos de'))                        return `<span class="badge badge-yellow">${esc(s)}</span>`;
   if (s.includes('atraso') || s.includes('bloqueio')) return `<span class="badge badge-red">${esc(s)}</span>`;
-  if (s === 'Concluído')                             return `<span class="badge badge-blue">${esc(s)}</span>`;
-  if (!s)                                            return '–';
+  if (s.toLowerCase() === 'concluído')               return `<span class="badge badge-blue">${esc(s)}</span>`;
+  if (!s)                                             return '–';
   return `<span class="badge badge-gray">${esc(s)}</span>`;
 }
 
 function normalizeStatus(s) {
-  return clean(s).toLowerCase()
-    .replace(/​|‌|‍|﻿/g, '') // remove zero-width chars
-    .replace(/\s+/g, ' ').trim();
+  return clean(s).toLowerCase().replace(/​|‌|‍|﻿/g,'').replace(/\s+/g,' ').trim();
 }
 
-// parse "jun/2026" → Date at end of that month
 function parsePrazoMes(prazo) {
   const m = clean(prazo).match(/^(\w{3})\/(\d{4})$/i);
   if (!m) return null;
   const mon = MONTHS_PT[m[1].toLowerCase()];
   if (!mon) return null;
-  const yr = parseInt(m[2]);
-  return new Date(yr, mon, 0); // last day of month
-}
-
-// parse "DD/MM/YYYY" → Date
-function parsePrazoData(prazo) {
-  const m = clean(prazo).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-  if (!m) return null;
-  return new Date(parseInt(m[3]), parseInt(m[2])-1, parseInt(m[1]));
+  return new Date(parseInt(m[2]), mon, 0); // último dia do mês
 }
 
 function isConcluido(status) {
   return normalizeStatus(status) === 'concluído';
+}
+
+function isProximoMes(date) {
+  if (!date) return false;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const ini = new Date(today.getFullYear(), today.getMonth()+1, 1);
+  const fim = new Date(today.getFullYear(), today.getMonth()+2, 0);
+  return date >= ini && date <= fim;
 }
 
 function isAtrasado(date) {
@@ -333,32 +424,78 @@ function isAtrasado(date) {
   return date < today;
 }
 
-function isProximoMes(date) {
-  if (!date) return false;
-  const today = new Date(); today.setHours(0,0,0,0);
-  const nextMonth = new Date(today.getFullYear(), today.getMonth()+1, 1);
-  const endNextMonth = new Date(today.getFullYear(), today.getMonth()+2, 0);
-  return date >= nextMonth && date <= endNextMonth;
+// ── CACHE (localStorage) ───────────────────────────────────
+function saveCache(name, data) {
+  try { localStorage.setItem('painel_' + name, JSON.stringify({ ts: Date.now(), data })); } catch(e) {}
+}
+
+function loadCache(name) {
+  try {
+    const raw = localStorage.getItem('painel_' + name);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function cacheAge(ts) {
+  const diff = Date.now() - ts;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  if (h === 0) return `${m} min atrás`;
+  if (h < 24) return `${h}h atrás`;
+  return `${Math.floor(h/24)} dias atrás`;
+}
+
+// ── FETCH com retry e cache ────────────────────────────────
+async function fetchSheet(name) {
+  const retries = 3;
+  let lastErr;
+  for (let i = 0; i < retries; i++) {
+    try {
+      const ctrl = new AbortController();
+      const tid  = setTimeout(() => ctrl.abort(), 18000);
+      const res  = await fetch(`${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(name)}`,
+        { signal: ctrl.signal });
+      clearTimeout(tid);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      saveCache(name, data);
+      return { data, fromCache: false };
+    } catch(e) {
+      lastErr = e;
+      if (i < retries - 1) await new Promise(r => setTimeout(r, 2500 * (i + 1)));
+    }
+  }
+  // fetch failed — try cache
+  const cached = loadCache(name);
+  if (cached) return { data: cached.data, fromCache: true, ts: cached.ts };
+  throw lastErr;
 }
 
 // ── METAS ─────────────────────────────────────────────────
 function renderMetas(rows) {
-  const grid = document.getElementById('metas-grid');
-  grid.innerHTML = '';
+  const grids = { impacto: document.getElementById('grid-impacto'), operacional: document.getElementById('grid-operacional') };
+  grids.impacto.innerHTML = '';
+  grids.operacional.innerHTML = '';
+
   rows.filter(r => clean(r.INDICADOR)).forEach(r => {
-    const alcancado = parseFloat(r.ALCANÇADO) || 0;
-    const meta      = parseFloat(r.META) || 0;
-    const limVerde  = parseFloat(r.LIM_VERDE) || meta;
-    const limAm     = parseFloat(r.LIM_AMARELO) || 0;
+    const alcancado = parseFloat(clean(r.ALCANÇADO).replace(',','.')) || 0;
+    const meta      = parseFloat(clean(r.META).replace(',','.'))      || 0;
+    const limVerde  = parseFloat(clean(r.LIM_VERDE).replace(',','.'))   || meta;
+    const limAm     = parseFloat(clean(r.LIM_AMARELO).replace(',','.')) || 0;
     const pct       = meta > 0 ? Math.min(100, (alcancado / meta) * 100) : 0;
+    const cat       = clean(r.CATEGORIA).toLowerCase();
+    const tipo      = cat.includes('operacional') ? 'operacional' : 'impacto';
+
     let fillClass = 'fill-gray';
     if (meta > 0) {
       if (alcancado >= limVerde) fillClass = 'fill-green';
       else if (alcancado >= limAm) fillClass = 'fill-yellow';
       else fillClass = 'fill-red';
     }
-    grid.innerHTML += `
-      <div class="meta-card">
+
+    grids[tipo].innerHTML += `
+      <div class="meta-card ${tipo}">
         <div class="cat">${esc(r.CATEGORIA)}</div>
         <div class="label">${esc(r.INDICADOR)}</div>
         <div class="numbers">
@@ -370,44 +507,45 @@ function renderMetas(rows) {
         </div>
       </div>`;
   });
+
+  if (!grids.impacto.children.length) grids.impacto.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador de impacto encontrado. Verifique a coluna CATEGORIA na planilha.</p>';
+  if (!grids.operacional.children.length) grids.operacional.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador operacional encontrado. Verifique a coluna CATEGORIA na planilha.</p>';
 }
 
 function renderEixoStats() {
-  if (!planoData.length) return;
   const container = document.getElementById('eixo-stats');
+  if (!planoData.length) return;
 
-  // compute per-eixo stats
   const stats = {};
   planoData.forEach(r => {
     if (r._isHeader || !r._eixo) return;
-    if (!stats[r._eixo]) stats[r._eixo] = {total:0,concluido:0,andamento:0,atencao:0,bloqueio:0,nao:0};
+    if (!stats[r._eixo]) stats[r._eixo] = {total:0, concluido:0, andamento:0, atencao:0, bloqueio:0, nao:0};
     const s = stats[r._eixo];
     const norm = normalizeStatus(r.status);
     s.total++;
-    if (isConcluido(r.status)) s.concluido++;
-    else if (norm.includes('conforme esperado')) s.andamento++;
-    else if (norm.includes('pontos de')) s.atencao++;
-    else if (norm.includes('atraso') || norm.includes('bloqueio')) s.bloqueio++;
-    else s.nao++;
+    if (isConcluido(r.status))                                         s.concluido++;
+    else if (norm.includes('conforme esperado'))                        s.andamento++;
+    else if (norm.includes('pontos de'))                               s.atencao++;
+    else if (norm.includes('atraso') || norm.includes('bloqueio'))     s.bloqueio++;
+    else                                                                s.nao++;
   });
 
   const eixos = Object.keys(stats);
-  if (!eixos.length) { container.innerHTML = '<div class="loading">Sem dados.</div>'; return; }
+  if (!eixos.length) { container.innerHTML = '<div class="empty-state">Sem dados.</div>'; return; }
 
-  let html = `<table>
-    <thead><tr>
-      <th>Eixo</th>
-      <th>Total</th>
-      <th style="color:#93c5fd">✔ Concluído</th>
-      <th style="color:#86efac">↗ Conforme</th>
-      <th style="color:#fde68a">⚠ Atenção</th>
-      <th style="color:#fca5a5">🔴 Bloqueio</th>
-      <th style="color:#d1d5db">○ Não iniciado</th>
-    </tr></thead><tbody>`;
+  let html = `<table><thead><tr>
+    <th>Eixo</th>
+    <th title="Total de ações">Total</th>
+    <th style="color:#93c5fd">✔ Concluído</th>
+    <th style="color:#86efac">↗ Conforme</th>
+    <th style="color:#fde68a">⚠ Atenção</th>
+    <th style="color:#fca5a5">🔴 Bloqueio</th>
+    <th style="color:#d1d5db">○ Não iniciado</th>
+  </tr></thead><tbody>`;
 
-  eixos.forEach(eixo => {
-    const s = stats[eixo];
-    const label = eixo.split('–')[0].trim();
+  eixos.forEach(e => {
+    const s = stats[e];
+    const label = e.split('–')[0].split('-')[0].trim();
     html += `<tr>
       <td>${esc(label)}</td>
       <td><span class="stat-num">${s.total}</span></td>
@@ -419,6 +557,39 @@ function renderEixoStats() {
     </tr>`;
   });
   html += '</tbody></table>';
+  container.innerHTML = html;
+}
+
+function renderAgendaMes() {
+  const container = document.getElementById('agenda-mes');
+  const items = planoData.filter(r => {
+    if (r._isHeader || isConcluido(r.status)) return false;
+    const d = parsePrazoMes(r.prazo);
+    return d && isProximoMes(d);
+  });
+
+  if (!items.length) {
+    container.innerHTML = '<div class="empty-state">✅ Nenhuma ação com prazo no próximo mês.</div>';
+    return;
+  }
+
+  let html = '<div class="agenda-grid">';
+  items.forEach(r => {
+    const norm = normalizeStatus(r.status);
+    let cls = '';
+    if (norm.includes('atraso') || norm.includes('bloqueio')) cls = 'bloqueio';
+    else if (norm.includes('pontos de')) cls = 'atencao';
+    const eixoLabel = r._eixo ? r._eixo.split('–')[0].split('-')[0].trim() : '';
+    html += `<div class="agenda-card ${cls}">
+      <div class="a-eixo">${esc(eixoLabel)}</div>
+      <div class="a-titulo">${esc(r.entrega || r.num)}</div>
+      <div class="a-footer">
+        <span class="a-prazo">📅 ${esc(r.prazo)}</span>
+        ${statusBadge(r.status)}
+      </div>
+    </div>`;
+  });
+  html += '</div>';
   container.innerHTML = html;
 }
 
@@ -440,16 +611,15 @@ function parsePlano(rows) {
         prazo:      clean(r['PRAZO']),
         status:     clean(r['STATUS']),
         prioridade: clean(r['PRIORIDADE']),
-        _eixo: currentEixo,
-        _isHeader: false,
+        _eixo:      currentEixo,
+        _isHeader:  false,
       });
     }
   });
   const sel = document.getElementById('filter-eixo');
   eixoOptions.forEach(e => {
     const opt = document.createElement('option');
-    opt.value = e;
-    opt.textContent = e.split('–')[0].trim();
+    opt.value = e; opt.textContent = e.split('–')[0].split('-')[0].trim();
     sel.appendChild(opt);
   });
 }
@@ -460,6 +630,7 @@ function renderPlano() {
   const tbody = document.getElementById('plano-tbody');
   tbody.innerHTML = '';
   let lastEixo = '';
+
   planoData.forEach(r => {
     if (r._isHeader) return;
     if (filterEixo && r._eixo !== filterEixo) return;
@@ -476,9 +647,8 @@ function renderPlano() {
       <td>${esc(r.prioridade)}</td>
     </tr>`;
   });
-  if (!tbody.innerHTML) {
+  if (!tbody.innerHTML)
     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;padding:24px">Nenhum resultado.</td></tr>';
-  }
 }
 
 function resetFiltersPlano() {
@@ -495,8 +665,7 @@ function parsePmo(rows) {
   rows.forEach(r => {
     const acao    = clean(r['Ação STF']);
     const entrega = clean(r['Entrega Prioritária']);
-    // skip rows where ação is a date (data quality issue)
-    if (datePattern.test(acao) && !entrega) return;
+    if (datePattern.test(acao) && !entrega) return; // linha com data no lugar errado
     if (acao.startsWith('Eixo') || entrega.startsWith('Eixo')) {
       currentEixo = acao.startsWith('Eixo') ? acao : entrega;
       pmoData.push({ _eixo: currentEixo, _isHeader: true });
@@ -516,38 +685,28 @@ function parsePmo(rows) {
 }
 
 function getActivePills() {
-  return Array.from(document.querySelectorAll('.pill.active-green,.pill.active-yellow,.pill.active-red,.pill.active-gray,.pill.active-blue'))
+  return Array.from(document.querySelectorAll('.pill[class*="active-"]'))
     .map(b => normalizeStatus(b.dataset.status));
 }
 
 function togglePill(btn) {
-  const color = btn.dataset.color;
-  const cls = 'active-' + color;
-  // if this pill is active, deactivate it; otherwise activate it
-  if (btn.classList.contains(cls)) {
-    btn.classList.remove(cls);
-  } else {
-    btn.classList.add(cls);
-  }
+  const cls = 'active-' + btn.dataset.color;
+  btn.classList.toggle(cls);
   renderPmo();
 }
 
 function renderPmo() {
-  const showSub    = document.getElementById('show-sub').checked;
-  const active     = getActivePills();
-  const tbody      = document.getElementById('pmo-tbody');
-  tbody.innerHTML  = '';
-  let lastEixo     = '';
+  const showSub = document.getElementById('show-sub').checked;
+  const active  = getActivePills();
+  const tbody   = document.getElementById('pmo-tbody');
+  tbody.innerHTML = '';
+  let lastEixo = '';
 
   pmoData.forEach(r => {
     if (r._isHeader) return;
     const isSub = r.tipo === 'sub';
     if (!showSub && isSub) return;
-    // active.length === 0 → no filter, show all
-    if (active.length > 0) {
-      const norm = normalizeStatus(r.status);
-      if (!active.includes(norm)) return;
-    }
+    if (active.length > 0 && !active.includes(normalizeStatus(r.status))) return;
     if (r._eixo !== lastEixo) {
       lastEixo = r._eixo;
       tbody.innerHTML += `<tr class="eixo-row"><td colspan="6">${esc(r._eixo)}</td></tr>`;
@@ -562,155 +721,81 @@ function renderPmo() {
     </tr>`;
   });
 
-  if (!tbody.innerHTML) {
+  if (!tbody.innerHTML)
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:24px">Nenhum resultado.</td></tr>';
-  }
 }
 
 function resetFiltersPmo() {
-  document.querySelectorAll('.pill').forEach(b => {
-    const color = b.dataset.color;
-    b.classList.remove('active-green','active-yellow','active-red','active-gray','active-blue');
-  });
+  document.querySelectorAll('.pill').forEach(b =>
+    b.classList.remove('active-green','active-yellow','active-red','active-gray','active-blue'));
   document.getElementById('show-sub').checked = false;
   renderPmo();
 }
 
-// ── ALERTAS ────────────────────────────────────────────────
-function renderAlertas() {
-  const today = new Date(); today.setHours(0,0,0,0);
-
-  // 1. Bloqueios críticos no PMO (main only)
-  const bloqueios = pmoData.filter(r => !r._isHeader && r.tipo !== 'sub' &&
-    (normalizeStatus(r.status).includes('atraso') || normalizeStatus(r.status).includes('bloqueio')));
-
-  // 2. Ações atrasadas no Plano (prazo < hoje, não concluído)
-  const atrasadas = planoData.filter(r => {
-    if (r._isHeader || isConcluido(r.status)) return false;
-    const d = parsePrazoMes(r.prazo);
-    return d && isAtrasado(d);
-  });
-
-  // 3. Próximo mês no Plano (não concluído)
-  const proximo = planoData.filter(r => {
-    if (r._isHeader || isConcluido(r.status)) return false;
-    const d = parsePrazoMes(r.prazo);
-    return d && isProximoMes(d);
-  });
-
-  // 4. Pontos de atenção no PMO (main only)
-  const atencao = pmoData.filter(r => !r._isHeader && r.tipo !== 'sub' &&
-    normalizeStatus(r.status).includes('pontos de'));
-
-  document.getElementById('count-bloqueios').textContent = bloqueios.length;
-  document.getElementById('count-atrasadas').textContent = atrasadas.length;
-  document.getElementById('count-proximo').textContent   = proximo.length;
-  document.getElementById('count-atencao').textContent   = atencao.length;
-
-  // render bloqueios
-  renderAlertTable('alertas-bloqueios', bloqueios, 'pmo');
-  renderAlertTable('alertas-atrasadas', atrasadas, 'plano');
-  renderAlertTable('alertas-proximo',   proximo,   'plano');
-  renderAlertTable('alertas-atencao',   atencao,   'pmo');
-}
-
-function renderAlertTable(id, items, type) {
-  const el = document.getElementById(id);
-  if (!items.length) {
-    el.innerHTML = '<div class="empty-state">✅ Nenhuma ocorrência</div>';
-    return;
-  }
-  if (type === 'pmo') {
-    let html = `<div style="overflow-x:auto"><table>
-      <thead><tr><th>Ação</th><th>Entrega</th><th>Responsável</th><th>Prazo</th><th>Status</th><th>Próximos Passos</th></tr></thead><tbody>`;
-    items.forEach(r => {
-      html += `<tr>
-        <td>${esc(r.acao)}</td>
-        <td>${esc(r.entrega)}</td>
-        <td>${esc(r.responsavel)}</td>
-        <td>${esc(r.prazo)}</td>
-        <td>${statusBadge(r.status)}</td>
-        <td>${esc(r.comentario)}</td>
-      </tr>`;
-    });
-    html += '</tbody></table></div>';
-    el.innerHTML = html;
-  } else {
-    let html = `<div style="overflow-x:auto"><table>
-      <thead><tr><th style="width:60px">Nº</th><th>Entrega / Ação</th><th>Eixo</th><th>Prazo</th><th>Status</th></tr></thead><tbody>`;
-    items.forEach(r => {
-      html += `<tr>
-        <td>${esc(r.num)}</td>
-        <td>${esc(r.entrega)}</td>
-        <td style="font-size:11px;color:#666">${esc(r._eixo ? r._eixo.split('–')[0].trim() : '')}</td>
-        <td>${esc(r.prazo)}</td>
-        <td>${statusBadge(r.status)}</td>
-      </tr>`;
-    });
-    html += '</tbody></table></div>';
-    el.innerHTML = html;
-  }
-}
-
-// ── FETCH ──────────────────────────────────────────────────
-async function fetchSheet(name) {
-  const res = await fetch(`${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(name)}`);
-  if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
-  return res.json();
-}
-
+// ── LOAD ALL ───────────────────────────────────────────────
 async function loadAll() {
-  const now = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-  let metasOk = false, planoOk = false, pmoOk = false;
+  let anyFromCache = false;
+  let oldestCacheTs = null;
+  let anyError = false;
 
   // METAS
   try {
-    const rows = await fetchSheet('Metas');
-    DATA.metas = rows;
-    renderMetas(rows);
+    const { data, fromCache, ts } = await fetchSheet('Metas');
+    if (fromCache) { anyFromCache = true; if (!oldestCacheTs || ts < oldestCacheTs) oldestCacheTs = ts; }
+    renderMetas(data);
     document.getElementById('loading-metas').style.display = 'none';
     document.getElementById('metas-content').style.display = 'block';
-    metasOk = true;
   } catch(e) {
-    document.getElementById('loading-metas').innerHTML = `<div class="error-msg">⚠️ ${e.message}</div>`;
+    anyError = true;
+    document.getElementById('loading-metas').innerHTML = `<div class="error-msg">⚠️ Erro ao carregar metas: ${e.message}</div>`;
   }
 
   // PLANO
   try {
-    const rows = await fetchSheet('Plano Detalhado');
-    parsePlano(rows);
+    const { data, fromCache, ts } = await fetchSheet('Plano Detalhado');
+    if (fromCache) { anyFromCache = true; if (!oldestCacheTs || ts < oldestCacheTs) oldestCacheTs = ts; }
+    parsePlano(data);
     renderPlano();
     renderEixoStats();
+    renderAgendaMes();
     document.getElementById('loading-plano').style.display = 'none';
     document.getElementById('plano-content').style.display = 'block';
-    planoOk = true;
   } catch(e) {
-    document.getElementById('loading-plano').innerHTML = `<div class="error-msg">⚠️ ${e.message}</div>`;
+    anyError = true;
+    document.getElementById('loading-plano').innerHTML = `<div class="error-msg">⚠️ Erro ao carregar plano: ${e.message}</div>`;
+    document.getElementById('eixo-stats').innerHTML = '<div class="empty-state">Dados indisponíveis.</div>';
+    document.getElementById('agenda-mes').innerHTML = '<div class="empty-state">Dados indisponíveis.</div>';
   }
 
   // PMO
   try {
-    const rows = await fetchSheet('PMO Operacional');
-    parsePmo(rows);
+    const { data, fromCache, ts } = await fetchSheet('PMO Operacional');
+    if (fromCache) { anyFromCache = true; if (!oldestCacheTs || ts < oldestCacheTs) oldestCacheTs = ts; }
+    parsePmo(data);
     renderPmo();
     document.getElementById('loading-pmo').style.display = 'none';
     document.getElementById('pmo-content').style.display = 'block';
-    pmoOk = true;
   } catch(e) {
-    document.getElementById('loading-pmo').innerHTML = `<div class="error-msg">⚠️ ${e.message}</div>`;
+    anyError = true;
+    document.getElementById('loading-pmo').innerHTML = `<div class="error-msg">⚠️ Erro ao carregar PMO: ${e.message}</div>`;
   }
 
-  // ALERTAS (depende de plano + pmo)
-  if (planoOk && pmoOk) {
-    renderAlertas();
-    document.getElementById('loading-alertas').style.display = 'none';
-    document.getElementById('alertas-content').style.display = 'block';
+  // header status
+  const now = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+  const badge = document.getElementById('cache-badge');
+
+  if (anyFromCache && oldestCacheTs) {
+    document.getElementById('last-updated').textContent = `Dados do cache (${cacheAge(oldestCacheTs)})`;
+    badge.textContent = '⚠️ Sem conexão — dados salvos';
+    badge.className = 'cache-badge cached';
+  } else if (anyError) {
+    document.getElementById('last-updated').textContent = `Atualizado em: ${now} (com erros)`;
+    badge.textContent = '⚠️ Erro parcial';
+    badge.className = 'cache-badge cached';
   } else {
-    document.getElementById('loading-alertas').innerHTML =
-      '<div class="error-msg">⚠️ Não foi possível carregar os alertas (requer Plano + PMO).</div>';
+    document.getElementById('last-updated').textContent = `Atualizado em: ${now}`;
+    badge.style.display = 'none';
   }
-
-  document.getElementById('last-updated').textContent = `Atualizado em: ${now}`;
 }
 
 loadAll();
