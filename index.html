@@ -63,7 +63,10 @@
     .eixo-card .e-concluido { font-size: 28px; font-weight: 700; color: #111; }
     .eixo-card .e-meta { font-size: 13px; color: #888; margin-bottom: 8px; }
     .eixo-card .e-bar { height: 5px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
-    .eixo-card .e-bar-fill { height: 100%; background: #22c55e; border-radius: 99px; }
+    .eixo-card .e-bar-fill { height: 100%; border-radius: 99px; }
+    .eixo-card .e-bar-fill.bar-green  { background: #22c55e; }
+    .eixo-card .e-bar-fill.bar-yellow { background: #f59e0b; }
+    .eixo-card .e-bar-fill.bar-red    { background: #ef4444; }
     .eixo-card .e-alertas { display: flex; flex-direction: column; gap: 5px; padding-top: 10px; border-top: 1px solid #f0f0f0; }
     .eixo-card .e-alerta { font-size: 12px; display: flex; align-items: center; gap: 5px; }
     .stat-num { font-weight: 700; }
@@ -164,10 +167,6 @@
     <div class="metas-group">
       <div class="section-label">🎯 Impacto</div>
       <div class="metas-grid" id="grid-impacto"></div>
-    </div>
-    <div class="metas-group">
-      <div class="section-label">⚙️ Operacional</div>
-      <div class="metas-grid" id="grid-operacional"></div>
     </div>
     <div class="section-divider">
       <div class="section-label" style="white-space:nowrap">⚙️ Execução Operacional</div><hr />
@@ -313,15 +312,6 @@
       <div class="editing-indicator">Editando...</div>
     </div>
 
-    <div class="bp-card">
-      <h3>Como escalar bloqueios</h3>
-      <div class="bp-body" contenteditable="true" data-bp-id="bloqueios"
-        data-placeholder="Descreva o fluxo de escalada de bloqueios: quem acionar, em qual prazo e por qual canal...">
-      </div>
-      <div class="bp-edit-hint">✏️ Clique para editar</div>
-      <div class="editing-indicator">Editando...</div>
-    </div>
-
   </div>
 </div>
 
@@ -425,18 +415,15 @@ async function fetchSheet(name) {
 
 // ── METAS ─────────────────────────────────────────────────
 function renderMetas(rows) {
-  const gImpacto     = document.getElementById('grid-impacto');
-  const gOperacional = document.getElementById('grid-operacional');
-  gImpacto.innerHTML = ''; gOperacional.innerHTML = '';
+  const gImpacto = document.getElementById('grid-impacto');
+  gImpacto.innerHTML = '';
 
-  rows.filter(r => clean(r.INDICADOR)).forEach(r => {
+  rows.filter(r => clean(r.INDICADOR) && !clean(r.CATEGORIA).toLowerCase().includes('operacional')).forEach(r => {
     const alcancado = parseFloat(clean(r.ALCANÇADO).replace(',','.')) || 0;
     const meta      = parseFloat(clean(r.META).replace(',','.')) || 0;
     const limVerde  = parseFloat(clean(r.LIM_VERDE).replace(',','.')) || meta;
     const limAm     = parseFloat(clean(r.LIM_AMARELO).replace(',','.')) || 0;
     const pct       = meta > 0 ? Math.min(100, (alcancado / meta) * 100) : 0;
-    const isOp      = clean(r.CATEGORIA).toLowerCase().includes('operacional');
-    const tipo      = isOp ? 'operacional' : 'impacto';
 
     let fillClass = 'fill-gray';
     if (meta > 0) {
@@ -445,8 +432,8 @@ function renderMetas(rows) {
       else                         fillClass = 'fill-red';
     }
 
-    const card = `
-      <div class="meta-card ${tipo}">
+    gImpacto.innerHTML += `
+      <div class="meta-card impacto">
         <div class="cat">${esc(r.CATEGORIA)}</div>
         <div class="label">${esc(r.INDICADOR)}</div>
         <div class="numbers">
@@ -455,11 +442,9 @@ function renderMetas(rows) {
         </div>
         <div class="progress-bar"><div class="progress-fill ${fillClass}" style="width:${pct}%"></div></div>
       </div>`;
-    (isOp ? gOperacional : gImpacto).innerHTML += card;
   });
 
-  if (!gImpacto.children.length)     gImpacto.innerHTML     = '<p style="font-size:12px;color:#888">Nenhum indicador de impacto encontrado.</p>';
-  if (!gOperacional.children.length) gOperacional.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador operacional encontrado.</p>';
+  if (!gImpacto.children.length) gImpacto.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador de impacto encontrado.</p>';
 }
 
 function renderEixoStats() {
@@ -482,11 +467,12 @@ function renderEixoStats() {
     const s = stats[e];
     const pct = s.total > 0 ? Math.round((s.concluido / s.total) * 100) : 0;
     const eixoNum = (e.match(/Eixo\s*\d+/i) || [e.split('–')[0].trim()])[0];
+    const barCls  = pct >= 66 ? 'bar-green' : pct >= 33 ? 'bar-yellow' : 'bar-red';
     return `<div class="eixo-card">
       <div class="e-titulo">${esc(eixoNum)}</div>
       <div class="e-concluido">${s.concluido}<span style="font-size:14px;font-weight:400;color:#888"> / ${s.total}</span></div>
       <div class="e-meta">ações concluídas</div>
-      <div class="e-bar"><div class="e-bar-fill" style="width:${pct}%"></div></div>
+      <div class="e-bar"><div class="e-bar-fill ${barCls}" style="width:${pct}%"></div></div>
       <div class="e-alertas">
         ${s.bloqueio > 0 ? `<span class="e-alerta" style="color:#b91c1c;font-weight:600">🔴 ${s.bloqueio} com bloqueio crítico</span>` : ''}
         ${s.atencao  > 0 ? `<span class="e-alerta" style="color:#92400e;font-weight:600">⚠️ ${s.atencao} com ponto de atenção</span>` : ''}
