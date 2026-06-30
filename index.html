@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel CAR Pará – SEMAS</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1a3a2a" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: system-ui, -apple-system, sans-serif; font-size: 14px; background: #f5f5f5; color: #222; }
@@ -13,9 +15,7 @@
     .header-right { display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
     header p { font-size: 11px; color: #a8c8b4; }
     .cache-badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; display:none; }
-    .cache-badge.live    { background: #166534; color: #bbf7d0; }
     .cache-badge.cached  { background: #78350f; color: #fde68a; display:inline; }
-    .cache-badge.offline { background: #7f1d1d; color: #fecaca; display:inline; }
 
     .tabs { display: flex; background: #fff; border-bottom: 2px solid #e0e0e0; padding: 0 24px; overflow-x:auto; }
     .tab-btn { padding: 12px 16px; font-size: 13px; font-weight: 500; cursor: pointer;
@@ -30,14 +30,10 @@
     .loading { text-align: center; padding: 48px; color: #888; font-size: 13px; }
     .error-msg { background: #fff3cd; border-left: 4px solid #f59e0b; padding: 12px 16px;
       margin-bottom: 16px; border-radius: 4px; font-size: 13px; }
-    .info-msg { background: #eff6ff; border-left: 4px solid #60a5fa; padding: 10px 14px;
-      margin-bottom: 14px; border-radius: 4px; font-size: 12px; color: #1e40af; }
 
     /* ── SECTION HEADERS ── */
-    .section-label {
-      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
-      color: #fff; background: #1a3a2a; display: inline-block;
-      padding: 3px 10px; border-radius: 4px; margin-bottom: 12px; }
+    .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+      color: #fff; background: #1a3a2a; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: 12px; }
     .section-divider { margin: 24px 0 16px; display:flex; align-items:center; gap:12px; }
     .section-divider hr { flex:1; border:none; border-top: 1px solid #e0e0e0; }
 
@@ -48,33 +44,22 @@
       box-shadow: 0 1px 3px rgba(0,0,0,.08); border-top: 3px solid #e0e0e0; }
     .meta-card.impacto { border-top-color: #1a3a2a; }
     .meta-card.operacional { border-top-color: #60a5fa; }
-    .meta-card .cat { font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .06em; color: #888; margin-bottom: 4px; }
-    .meta-card .label { font-size: 13px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; color: #222; }
+    .meta-card .cat { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #888; margin-bottom: 4px; }
+    .meta-card .label { font-size: 13px; font-weight: 500; margin-bottom: 10px; line-height: 1.4; }
     .meta-card .numbers { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
-    .meta-card .atual { font-size: 24px; font-weight: 700; color: #111; }
+    .meta-card .atual { font-size: 24px; font-weight: 700; }
     .meta-card .total { font-size: 12px; color: #888; }
-    .progress-bar { height: 5px; background: #e5e7eb; border-radius: 99px; overflow: hidden; margin-bottom: 10px; }
+    .progress-bar { height: 5px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 99px; transition: width .5s; }
     .fill-green  { background: #22c55e; }
     .fill-yellow { background: #f59e0b; }
     .fill-red    { background: #ef4444; }
     .fill-gray   { background: #9ca3af; }
-    .meta-mini-stats { display: flex; gap: 8px; flex-wrap: wrap; border-top: 1px solid #f0f0f0; padding-top: 8px; }
-    .mini-stat { font-size: 11px; display:flex; align-items:center; gap:3px; }
-    .mini-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-    .dot-green  { background:#22c55e; }
-    .dot-blue   { background:#60a5fa; }
-    .dot-yellow { background:#f59e0b; }
-    .dot-red    { background:#ef4444; }
-    .dot-gray   { background:#9ca3af; }
 
-    /* ── EIXO STATS TABLE ── */
-    .eixo-stats { background: #fff; border-radius: 8px; overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    /* ── EIXO STATS ── */
+    .eixo-stats { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
     .eixo-stats table { width: 100%; border-collapse: collapse; }
-    .eixo-stats th { background: #1a3a2a; color: #fff; font-size: 11px; font-weight: 600;
-      padding: 8px 10px; text-align: center; white-space: nowrap; }
+    .eixo-stats th { background: #1a3a2a; color: #fff; font-size: 11px; font-weight: 600; padding: 8px 10px; text-align: center; white-space: nowrap; }
     .eixo-stats th:first-child { text-align: left; }
     .eixo-stats td { font-size: 12px; padding: 8px 10px; border-bottom: 1px solid #f0f0f0; text-align: center; }
     .eixo-stats td:first-child { text-align: left; font-weight: 500; }
@@ -93,8 +78,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,.08); border-left: 4px solid #60a5fa; }
     .agenda-card.bloqueio { border-left-color: #ef4444; }
     .agenda-card.atencao  { border-left-color: #f59e0b; }
-    .agenda-card .a-eixo { font-size: 10px; color: #888; text-transform: uppercase;
-      font-weight: 700; letter-spacing: .05em; margin-bottom: 4px; }
+    .agenda-card .a-eixo { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 700; letter-spacing: .05em; margin-bottom: 4px; }
     .agenda-card .a-titulo { font-size: 12px; font-weight: 500; line-height: 1.4; margin-bottom: 8px; }
     .agenda-card .a-footer { display:flex; justify-content:space-between; align-items:center; }
     .agenda-card .a-prazo { font-size: 11px; color: #666; }
@@ -104,10 +88,8 @@
     /* ── TABLES ── */
     .filter-bar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
     .filter-bar label { font-size: 12px; color: #555; display:flex; align-items:center; gap:4px; }
-    .filter-bar select { font-size: 12px; padding: 5px 10px; border: 1px solid #d1d5db;
-      border-radius: 5px; background: #fff; cursor: pointer; }
-    .filter-bar .reset { font-size: 12px; color: #1a3a2a; cursor: pointer;
-      text-decoration: underline; background: none; border: none; padding: 0; }
+    .filter-bar select { font-size: 12px; padding: 5px 10px; border: 1px solid #d1d5db; border-radius: 5px; background: #fff; cursor: pointer; }
+    .filter-bar .reset { font-size: 12px; color: #1a3a2a; cursor: pointer; text-decoration: underline; background: none; border: none; padding: 0; }
     .filter-divider { border-left: 1px solid #ddd; height: 20px; margin: 0 4px; }
 
     .pill { font-size: 11px; padding: 4px 10px; border-radius: 99px; border: 1.5px solid #d1d5db;
@@ -119,21 +101,17 @@
     .pill.active-gray   { background: #f3f4f6; border-color: #9ca3af; color: #374151; font-weight:600; }
     .pill.active-blue   { background: #dbeafe; border-color: #60a5fa; color: #1d4ed8; font-weight:600; }
 
-    table { width: 100%; border-collapse: collapse; background: #fff;
-      border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
     thead tr { background: #1a3a2a; color: #fff; }
     th { padding: 10px 12px; text-align: left; font-size: 12px; font-weight: 600; white-space: nowrap; }
-    td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #f0f0f0;
-      vertical-align: top; line-height: 1.45; }
+    td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #f0f0f0; vertical-align: top; line-height: 1.45; }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #f9fafb; }
-    .eixo-row td { background: #eef2ee; font-weight: 700; font-size: 11px;
-      color: #1a3a2a; padding: 6px 12px; letter-spacing:.02em; }
-    .sub-row td:first-child { padding-left: 22px; color: #888; }
+    .eixo-row td { background: #eef2ee; font-weight: 700; font-size: 11px; color: #1a3a2a; padding: 6px 12px; }
     .sub-row td { color: #666; font-style: italic; }
+    .sub-row td:first-child { padding-left: 22px; color: #888; }
 
-    .badge { display: inline-block; padding: 2px 7px; border-radius: 99px;
-      font-size: 11px; font-weight: 500; white-space: nowrap; }
+    .badge { display: inline-block; padding: 2px 7px; border-radius: 99px; font-size: 11px; font-weight: 500; white-space: nowrap; }
     .badge-green  { background: #dcfce7; color: #15803d; }
     .badge-yellow { background: #fef9c3; color: #92400e; }
     .badge-red    { background: #fee2e2; color: #b91c1c; }
@@ -141,21 +119,26 @@
     .badge-blue   { background: #dbeafe; color: #1d4ed8; }
 
     /* ── BOAS PRÁTICAS ── */
+    .bp-toolbar { display: flex; gap: 10px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+    .bp-toolbar p { font-size: 12px; color: #666; flex: 1; }
+    .btn-download { font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 6px;
+      background: #1a3a2a; color: #fff; border: none; cursor: pointer; white-space: nowrap; }
+    .btn-download:hover { background: #2d5a40; }
+    .btn-reset-bp { font-size: 12px; padding: 8px 14px; border-radius: 6px;
+      background: #fff; color: #666; border: 1px solid #d1d5db; cursor: pointer; white-space: nowrap; }
+    .btn-reset-bp:hover { border-color: #9ca3af; }
+
     .bp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     .bp-card { background: #fff; border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-    .bp-card h3 { font-size: 13px; font-weight: 700; color: #1a3a2a; margin-bottom: 10px;
-      display: flex; align-items: center; gap: 8px; }
-    .bp-card p, .bp-card li { font-size: 12px; color: #555; line-height: 1.6; }
-    .bp-card ul { padding-left: 16px; margin-top: 6px; }
-    .bp-card li { margin-bottom: 4px; }
-    .bp-placeholder { background: #f9fafb; border: 1.5px dashed #d1d5db; border-radius: 6px;
-      padding: 12px; margin-top: 10px; font-size: 11px; color: #9ca3af; font-style: italic; }
-
-    @media (max-width: 640px) {
-      header { padding: 12px 16px; }
-      .tab-panel { padding: 16px; }
-      th, td { font-size: 11px; padding: 6px 8px; }
-    }
+    .bp-card h3 { font-size: 13px; font-weight: 700; color: #1a3a2a; margin-bottom: 10px; }
+    .bp-body { font-size: 12px; color: #444; line-height: 1.7; outline: none; min-height: 60px; }
+    .bp-body:focus { background: #f0fdf4; border-radius: 4px; padding: 4px; margin: -4px; }
+    .bp-body[contenteditable="true"]:empty::before { content: attr(data-placeholder); color: #bbb; font-style: italic; }
+    .bp-edit-hint { font-size: 10px; color: #9ca3af; margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+    .editing-indicator { display: none; font-size: 10px; color: #15803d; background: #dcfce7;
+      padding: 2px 6px; border-radius: 99px; margin-left: auto; }
+    .bp-card:focus-within .editing-indicator { display: inline; }
+    .bp-card:focus-within .bp-edit-hint { display: none; }
   </style>
 </head>
 <body>
@@ -169,9 +152,9 @@
 </header>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="showTab('metas',  this)">📊 Metas</button>
-  <button class="tab-btn"        onclick="showTab('plano',  this)">📋 Plano Detalhado</button>
-  <button class="tab-btn"        onclick="showTab('pmo',    this)">⚙️ PMO Operacional</button>
+  <button class="tab-btn active" onclick="showTab('metas',    this)">📊 Metas</button>
+  <button class="tab-btn"        onclick="showTab('plano',    this)">📋 Plano Detalhado</button>
+  <button class="tab-btn"        onclick="showTab('pmo',      this)">⚙️ PMO Operacional</button>
   <button class="tab-btn"        onclick="showTab('praticas', this)">📘 Boas Práticas</button>
 </div>
 
@@ -179,34 +162,23 @@
 <div id="tab-metas" class="tab-panel active">
   <div class="loading" id="loading-metas">Carregando metas...</div>
   <div id="metas-content" style="display:none">
-
-    <!-- Indicadores de impacto -->
     <div class="metas-group">
       <div class="section-label">🎯 Impacto</div>
       <div class="metas-grid" id="grid-impacto"></div>
     </div>
-
-    <!-- Indicadores operacionais -->
     <div class="metas-group">
       <div class="section-label">⚙️ Operacional</div>
       <div class="metas-grid" id="grid-operacional"></div>
     </div>
-
-    <!-- Situação por eixo -->
     <div class="section-divider">
-      <div class="section-label" style="white-space:nowrap">📋 Situação por Eixo</div>
-      <hr />
+      <div class="section-label" style="white-space:nowrap">📋 Situação por Eixo</div><hr />
     </div>
-    <div class="eixo-stats" id="eixo-stats"><div class="loading">Aguardando dados do plano...</div></div>
-
-    <!-- Agenda do mês -->
+    <div class="eixo-stats" id="eixo-stats"><div class="loading">Aguardando dados...</div></div>
     <div class="section-divider">
-      <div class="section-label" style="white-space:nowrap">📅 Agenda do Mês</div>
-      <hr />
+      <div class="section-label" style="white-space:nowrap">📅 Agenda do Mês</div><hr />
     </div>
-    <p style="font-size:12px;color:#666;margin-bottom:12px;">Ações do Plano Detalhado com prazo no próximo mês e que ainda não foram concluídas.</p>
-    <div id="agenda-mes"><div class="loading">Aguardando dados do plano...</div></div>
-
+    <p style="font-size:12px;color:#666;margin-bottom:12px;">Ações do Plano Detalhado com prazo no próximo mês ainda não concluídas.</p>
+    <div id="agenda-mes"><div class="loading">Aguardando dados...</div></div>
   </div>
 </div>
 
@@ -216,9 +188,7 @@
   <div id="plano-content" style="display:none">
     <div class="filter-bar">
       <label>Eixo:
-        <select id="filter-eixo" onchange="renderPlano()">
-          <option value="">Todos</option>
-        </select>
+        <select id="filter-eixo" onchange="renderPlano()"><option value="">Todos</option></select>
       </label>
       <label>Status:
         <select id="filter-status-plano" onchange="renderPlano()">
@@ -236,11 +206,8 @@
     <div style="overflow-x:auto">
       <table>
         <thead><tr>
-          <th style="width:60px">Nº</th>
-          <th>Entrega / Ação</th>
-          <th style="width:90px">Prazo</th>
-          <th style="width:180px">Status</th>
-          <th style="width:70px">Prior.</th>
+          <th style="width:60px">Nº</th><th>Entrega / Ação</th>
+          <th style="width:90px">Prazo</th><th style="width:180px">Status</th><th style="width:70px">Prior.</th>
         </tr></thead>
         <tbody id="plano-tbody"></tbody>
       </table>
@@ -269,12 +236,9 @@
     <div style="overflow-x:auto">
       <table>
         <thead><tr>
-          <th style="width:70px">Ação</th>
-          <th>Entrega Prioritária</th>
-          <th style="width:100px">Responsável</th>
-          <th style="width:95px">Prazo</th>
-          <th style="width:180px">Status</th>
-          <th>Próximos Passos / Observações</th>
+          <th style="width:70px">Ação</th><th>Entrega Prioritária</th>
+          <th style="width:100px">Responsável</th><th style="width:95px">Prazo</th>
+          <th style="width:180px">Status</th><th>Próximos Passos / Observações</th>
         </tr></thead>
         <tbody id="pmo-tbody"></tbody>
       </table>
@@ -284,74 +248,107 @@
 
 <!-- ══ BOAS PRÁTICAS ══ -->
 <div id="tab-praticas" class="tab-panel">
-  <p style="font-size:13px;color:#555;margin-bottom:20px;line-height:1.6;">
-    Esta aba reúne orientações para que a equipe da SEMAS mantenha o monitoramento do plano de regularização ambiental de forma consistente após o encerramento da consultoria.
-  </p>
-  <div class="bp-grid">
+  <div class="bp-toolbar">
+    <p>Clique em qualquer card para editar. As alterações ficam salvas automaticamente neste navegador.</p>
+    <button class="btn-reset-bp" onclick="resetBp()">↩ Restaurar padrão</button>
+    <button class="btn-download" onclick="downloadHTML()">⬇ Baixar HTML atualizado</button>
+  </div>
+  <div class="bp-grid" id="bp-grid">
 
     <div class="bp-card">
       <h3>📅 Frequência de atualização</h3>
-      <ul>
-        <li>Atualizar a planilha Google Sheets ao menos <strong>uma vez por semana</strong></li>
-        <li>Revisar os status do PMO Operacional antes de cada reunião de acompanhamento</li>
-        <li>Atualizar o Plano Detalhado ao fim de cada mês</li>
-      </ul>
-      <div class="bp-placeholder">[ Adicionar calendário de reuniões fixas da equipe ]</div>
+      <div class="bp-body" contenteditable="true" data-bp-id="frequencia"
+        data-placeholder="Descreva aqui a frequência de atualização da planilha...">
+        <ul style="padding-left:16px">
+          <li>Atualizar a planilha Google Sheets ao menos <strong>uma vez por semana</strong></li>
+          <li>Revisar os status do PMO Operacional antes de cada reunião de acompanhamento</li>
+          <li>Atualizar o Plano Detalhado ao fim de cada mês</li>
+        </ul>
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
     </div>
 
     <div class="bp-card">
       <h3>🔄 Como usar este painel</h3>
-      <ul>
-        <li>Use a aba <strong>Metas</strong> para acompanhar resultados globais e a Agenda do Mês</li>
-        <li>Use o <strong>Plano Detalhado</strong> para rastrear cada ação e seu status</li>
-        <li>Use o <strong>PMO Operacional</strong> para gestão tática semana a semana</li>
-      </ul>
-      <div class="bp-placeholder">[ Adicionar vídeo ou guia rápido de uso da ferramenta ]</div>
+      <div class="bp-body" contenteditable="true" data-bp-id="como-usar"
+        data-placeholder="Descreva como a equipe deve usar o painel...">
+        <ul style="padding-left:16px">
+          <li>Use <strong>Metas</strong> para acompanhar resultados e a Agenda do Mês</li>
+          <li>Use o <strong>Plano Detalhado</strong> para rastrear cada ação e seu status</li>
+          <li>Use o <strong>PMO Operacional</strong> para gestão tática semana a semana</li>
+          <li>Use <strong>Boas Práticas</strong> para orientações de governança e rotinas da equipe</li>
+        </ul>
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
     </div>
 
     <div class="bp-card">
       <h3>⚠️ Como escalar bloqueios</h3>
-      <div class="bp-placeholder">[ Descrever o fluxo interno da SEMAS para escalada de bloqueios — quem acionar, em qual prazo e por qual canal ]</div>
+      <div class="bp-body" contenteditable="true" data-bp-id="bloqueios"
+        data-placeholder="Descreva o fluxo de escalada de bloqueios: quem acionar, em qual prazo e por qual canal...">
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
     </div>
 
     <div class="bp-card">
       <h3>🤝 Reuniões de acompanhamento</h3>
-      <div class="bp-placeholder">[ Descrever a estrutura das reuniões de monitoramento: participantes, pauta padrão, duração, periodicidade e como registrar decisões ]</div>
+      <div class="bp-body" contenteditable="true" data-bp-id="reunioes"
+        data-placeholder="Descreva a estrutura das reuniões: participantes, pauta padrão, duração e periodicidade...">
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
     </div>
 
     <div class="bp-card">
       <h3>📊 Como interpretar os status</h3>
-      <ul>
-        <li><span class="badge badge-green">Conforme esperado</span> — Execução dentro do prazo e do escopo</li>
-        <li><span class="badge badge-yellow">Pontos de atenção</span> — Risco identificado; requer monitoramento próximo</li>
-        <li><span class="badge badge-red">Bloqueios críticos</span> — Ação bloqueada; requer decisão ou apoio imediato</li>
-        <li><span class="badge badge-blue">Concluído</span> — Entrega finalizada e validada</li>
-        <li><span class="badge badge-gray">Não iniciado / Backlog</span> — Ainda não começou</li>
-      </ul>
+      <div class="bp-body" contenteditable="true" data-bp-id="status"
+        data-placeholder="Explique o significado de cada status...">
+        <ul style="padding-left:0;list-style:none">
+          <li style="margin-bottom:6px"><span class="badge badge-green">Conforme esperado</span> — Execução dentro do prazo e escopo</li>
+          <li style="margin-bottom:6px"><span class="badge badge-yellow">Pontos de atenção</span> — Risco identificado; monitoramento próximo</li>
+          <li style="margin-bottom:6px"><span class="badge badge-red">Bloqueios críticos</span> — Bloqueada; requer decisão imediata</li>
+          <li style="margin-bottom:6px"><span class="badge badge-blue">Concluído</span> — Entrega finalizada e validada</li>
+          <li><span class="badge badge-gray">Não iniciado / Backlog</span> — Ainda não começou</li>
+        </ul>
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
     </div>
 
     <div class="bp-card">
       <h3>📁 Gestão da planilha</h3>
-      <ul>
-        <li>Não renomear as abas — os nomes são usados pelo painel</li>
-        <li>Não excluir colunas existentes</li>
-        <li>Novos indicadores devem seguir o padrão de CATEGORIA e limites de cor</li>
-      </ul>
-      <div class="bp-placeholder">[ Adicionar nome e contato do responsável pela manutenção da planilha ]</div>
+      <div class="bp-body" contenteditable="true" data-bp-id="planilha"
+        data-placeholder="Adicione orientações sobre como manter a planilha...">
+        <ul style="padding-left:16px">
+          <li>Não renomear as abas — os nomes são usados pelo painel</li>
+          <li>Não excluir colunas existentes</li>
+          <li>Novos indicadores devem seguir o padrão de CATEGORIA e limites de cor</li>
+        </ul>
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
     </div>
 
     <div class="bp-card">
       <h3>🌐 Problemas de conectividade</h3>
-      <p>O painel salva automaticamente os últimos dados carregados. Se a internet estiver instável, ele exibirá os dados mais recentes disponíveis com a data do último carregamento.</p>
-      <ul style="margin-top:8px">
-        <li>Conecte-se a uma rede estável antes de abrir o painel</li>
-        <li>Se aparecer aviso de "dados do cache", recarregue a página quando a internet melhorar</li>
-      </ul>
+      <div class="bp-body" contenteditable="true" data-bp-id="conectividade"
+        data-placeholder="Descreva o que fazer quando a internet estiver instável...">
+        O painel funciona mesmo sem internet (PWA). Ao abrir pela primeira vez com conexão, ele fica salvo no navegador para uso offline. Se os dados não atualizarem, conecte-se a uma rede melhor e recarregue a página.
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
     </div>
 
     <div class="bp-card">
       <h3>📝 Lições aprendidas</h3>
-      <div class="bp-placeholder">[ Registrar aqui aprendizados do projeto — o que funcionou, o que foi difícil e como a equipe superou os obstáculos ]</div>
+      <div class="bp-body" contenteditable="true" data-bp-id="licoes"
+        data-placeholder="Registre aqui os aprendizados do projeto — o que funcionou, o que foi difícil e como a equipe superou os obstáculos...">
+      </div>
+      <div class="bp-edit-hint">✏️ Clique para editar</div>
+      <div class="editing-indicator">Editando...</div>
     </div>
 
   </div>
@@ -359,13 +356,16 @@
 
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxr4o-rRdXOyDUF9dqpDMqL3uG30ptVx1IWCourdZWwyUqbZM0Y5ThymKTyUSCEX8mdOA/exec';
-const CACHE_TTL = 12 * 60 * 60 * 1000; // 12 horas
+const CACHE_TTL = 12 * 60 * 60 * 1000;
 
-let planoData = [];
-let eixoOptions = [];
-let pmoData = [];
+let planoData = [], eixoOptions = [], pmoData = [];
 
-// ── Utils ──────────────────────────────────────────────────
+// ── PWA ───────────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// ── Utils ─────────────────────────────────────────────────
 const MONTHS_PT = {jan:1,fev:2,mar:3,abr:4,mai:5,jun:6,jul:7,ago:8,set:9,out:10,nov:11,dez:12};
 
 function showTab(name, btn) {
@@ -403,12 +403,10 @@ function parsePrazoMes(prazo) {
   if (!m) return null;
   const mon = MONTHS_PT[m[1].toLowerCase()];
   if (!mon) return null;
-  return new Date(parseInt(m[2]), mon, 0); // último dia do mês
+  return new Date(parseInt(m[2]), mon, 0);
 }
 
-function isConcluido(status) {
-  return normalizeStatus(status) === 'concluído';
-}
+function isConcluido(status) { return normalizeStatus(status) === 'concluído'; }
 
 function isProximoMes(date) {
   if (!date) return false;
@@ -418,80 +416,60 @@ function isProximoMes(date) {
   return date >= ini && date <= fim;
 }
 
-function isAtrasado(date) {
-  if (!date) return false;
-  const today = new Date(); today.setHours(0,0,0,0);
-  return date < today;
-}
-
-// ── CACHE (localStorage) ───────────────────────────────────
+// ── Cache (localStorage) ──────────────────────────────────
 function saveCache(name, data) {
   try { localStorage.setItem('painel_' + name, JSON.stringify({ ts: Date.now(), data })); } catch(e) {}
 }
-
 function loadCache(name) {
-  try {
-    const raw = localStorage.getItem('painel_' + name);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch(e) { return null; }
+  try { const r = localStorage.getItem('painel_' + name); return r ? JSON.parse(r) : null; } catch(e) { return null; }
 }
-
 function cacheAge(ts) {
-  const diff = Date.now() - ts;
-  const h = Math.floor(diff / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  if (h === 0) return `${m} min atrás`;
-  if (h < 24) return `${h}h atrás`;
-  return `${Math.floor(h/24)} dias atrás`;
+  const h = Math.floor((Date.now()-ts)/3600000);
+  const m = Math.floor(((Date.now()-ts)%3600000)/60000);
+  return h === 0 ? `${m} min atrás` : h < 24 ? `${h}h atrás` : `${Math.floor(h/24)}d atrás`;
 }
 
-// ── FETCH com retry e cache ────────────────────────────────
+// ── Fetch com retry ───────────────────────────────────────
 async function fetchSheet(name) {
-  const retries = 3;
-  let lastErr;
-  for (let i = 0; i < retries; i++) {
+  for (let i = 0; i < 3; i++) {
     try {
       const ctrl = new AbortController();
       const tid  = setTimeout(() => ctrl.abort(), 18000);
-      const res  = await fetch(`${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(name)}`,
-        { signal: ctrl.signal });
+      const res  = await fetch(`${APPS_SCRIPT_URL}?sheet=${encodeURIComponent(name)}`, { signal: ctrl.signal });
       clearTimeout(tid);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       saveCache(name, data);
       return { data, fromCache: false };
     } catch(e) {
-      lastErr = e;
-      if (i < retries - 1) await new Promise(r => setTimeout(r, 2500 * (i + 1)));
+      if (i < 2) await new Promise(r => setTimeout(r, 2500 * (i+1)));
+      else {
+        const cached = loadCache(name);
+        if (cached) return { data: cached.data, fromCache: true, ts: cached.ts };
+        throw e;
+      }
     }
   }
-  // fetch failed — try cache
-  const cached = loadCache(name);
-  if (cached) return { data: cached.data, fromCache: true, ts: cached.ts };
-  throw lastErr;
 }
 
 // ── METAS ─────────────────────────────────────────────────
 function renderMetas(rows) {
   const grids = { impacto: document.getElementById('grid-impacto'), operacional: document.getElementById('grid-operacional') };
-  grids.impacto.innerHTML = '';
-  grids.operacional.innerHTML = '';
+  grids.impacto.innerHTML = ''; grids.operacional.innerHTML = '';
 
   rows.filter(r => clean(r.INDICADOR)).forEach(r => {
     const alcancado = parseFloat(clean(r.ALCANÇADO).replace(',','.')) || 0;
-    const meta      = parseFloat(clean(r.META).replace(',','.'))      || 0;
-    const limVerde  = parseFloat(clean(r.LIM_VERDE).replace(',','.'))   || meta;
+    const meta      = parseFloat(clean(r.META).replace(',','.')) || 0;
+    const limVerde  = parseFloat(clean(r.LIM_VERDE).replace(',','.')) || meta;
     const limAm     = parseFloat(clean(r.LIM_AMARELO).replace(',','.')) || 0;
     const pct       = meta > 0 ? Math.min(100, (alcancado / meta) * 100) : 0;
-    const cat       = clean(r.CATEGORIA).toLowerCase();
-    const tipo      = cat.includes('operacional') ? 'operacional' : 'impacto';
+    const tipo      = clean(r.CATEGORIA).toLowerCase().includes('operacional') ? 'operacional' : 'impacto';
 
     let fillClass = 'fill-gray';
     if (meta > 0) {
-      if (alcancado >= limVerde) fillClass = 'fill-green';
-      else if (alcancado >= limAm) fillClass = 'fill-yellow';
-      else fillClass = 'fill-red';
+      if (alcancado >= limVerde)     fillClass = 'fill-green';
+      else if (alcancado >= limAm)   fillClass = 'fill-yellow';
+      else                           fillClass = 'fill-red';
     }
 
     grids[tipo].innerHTML += `
@@ -502,118 +480,82 @@ function renderMetas(rows) {
           <span class="atual">${alcancado.toLocaleString('pt-BR')}</span>
           <span class="total">meta: ${meta > 0 ? meta.toLocaleString('pt-BR') : '–'}</span>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill ${fillClass}" style="width:${pct}%"></div>
-        </div>
+        <div class="progress-bar"><div class="progress-fill ${fillClass}" style="width:${pct}%"></div></div>
       </div>`;
   });
 
-  if (!grids.impacto.children.length) grids.impacto.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador de impacto encontrado. Verifique a coluna CATEGORIA na planilha.</p>';
-  if (!grids.operacional.children.length) grids.operacional.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador operacional encontrado. Verifique a coluna CATEGORIA na planilha.</p>';
+  if (!grids.impacto.children.length)     grids.impacto.innerHTML     = '<p style="font-size:12px;color:#888">Nenhum indicador de impacto. Verifique a coluna CATEGORIA na planilha.</p>';
+  if (!grids.operacional.children.length) grids.operacional.innerHTML = '<p style="font-size:12px;color:#888">Nenhum indicador operacional. Verifique a coluna CATEGORIA na planilha.</p>';
 }
 
 function renderEixoStats() {
   const container = document.getElementById('eixo-stats');
   if (!planoData.length) return;
-
   const stats = {};
   planoData.forEach(r => {
     if (r._isHeader || !r._eixo) return;
-    if (!stats[r._eixo]) stats[r._eixo] = {total:0, concluido:0, andamento:0, atencao:0, bloqueio:0, nao:0};
-    const s = stats[r._eixo];
-    const norm = normalizeStatus(r.status);
+    if (!stats[r._eixo]) stats[r._eixo] = {total:0,concluido:0,andamento:0,atencao:0,bloqueio:0,nao:0};
+    const s = stats[r._eixo], norm = normalizeStatus(r.status);
     s.total++;
-    if (isConcluido(r.status))                                         s.concluido++;
-    else if (norm.includes('conforme esperado'))                        s.andamento++;
-    else if (norm.includes('pontos de'))                               s.atencao++;
-    else if (norm.includes('atraso') || norm.includes('bloqueio'))     s.bloqueio++;
-    else                                                                s.nao++;
+    if (isConcluido(r.status)) s.concluido++;
+    else if (norm.includes('conforme esperado')) s.andamento++;
+    else if (norm.includes('pontos de')) s.atencao++;
+    else if (norm.includes('atraso') || norm.includes('bloqueio')) s.bloqueio++;
+    else s.nao++;
   });
-
   const eixos = Object.keys(stats);
   if (!eixos.length) { container.innerHTML = '<div class="empty-state">Sem dados.</div>'; return; }
-
   let html = `<table><thead><tr>
-    <th>Eixo</th>
-    <th title="Total de ações">Total</th>
-    <th style="color:#93c5fd">✔ Concluído</th>
-    <th style="color:#86efac">↗ Conforme</th>
-    <th style="color:#fde68a">⚠ Atenção</th>
-    <th style="color:#fca5a5">🔴 Bloqueio</th>
+    <th>Eixo</th><th>Total</th>
+    <th style="color:#93c5fd">✔ Concluído</th><th style="color:#86efac">↗ Conforme</th>
+    <th style="color:#fde68a">⚠ Atenção</th><th style="color:#fca5a5">🔴 Bloqueio</th>
     <th style="color:#d1d5db">○ Não iniciado</th>
   </tr></thead><tbody>`;
-
   eixos.forEach(e => {
-    const s = stats[e];
-    const label = e.split('–')[0].split('-')[0].trim();
-    html += `<tr>
-      <td>${esc(label)}</td>
-      <td><span class="stat-num">${s.total}</span></td>
+    const s = stats[e], label = e.split('–')[0].split('-')[0].trim();
+    html += `<tr><td>${esc(label)}</td><td><span class="stat-num">${s.total}</span></td>
       <td><span class="stat-num stat-blue">${s.concluido}</span></td>
       <td><span class="stat-num stat-green">${s.andamento}</span></td>
       <td><span class="stat-num stat-yellow">${s.atencao}</span></td>
       <td><span class="stat-num stat-red">${s.bloqueio}</span></td>
-      <td><span class="stat-num stat-gray">${s.nao}</span></td>
-    </tr>`;
+      <td><span class="stat-num stat-gray">${s.nao}</span></td></tr>`;
   });
-  html += '</tbody></table>';
-  container.innerHTML = html;
+  container.innerHTML = html + '</tbody></table>';
 }
 
 function renderAgendaMes() {
   const container = document.getElementById('agenda-mes');
   const items = planoData.filter(r => {
     if (r._isHeader || isConcluido(r.status)) return false;
-    const d = parsePrazoMes(r.prazo);
-    return d && isProximoMes(d);
+    return isProximoMes(parsePrazoMes(r.prazo));
   });
-
-  if (!items.length) {
-    container.innerHTML = '<div class="empty-state">✅ Nenhuma ação com prazo no próximo mês.</div>';
-    return;
-  }
-
+  if (!items.length) { container.innerHTML = '<div class="empty-state">✅ Nenhuma ação com prazo no próximo mês.</div>'; return; }
   let html = '<div class="agenda-grid">';
   items.forEach(r => {
     const norm = normalizeStatus(r.status);
-    let cls = '';
-    if (norm.includes('atraso') || norm.includes('bloqueio')) cls = 'bloqueio';
-    else if (norm.includes('pontos de')) cls = 'atencao';
-    const eixoLabel = r._eixo ? r._eixo.split('–')[0].split('-')[0].trim() : '';
+    const cls  = (norm.includes('atraso') || norm.includes('bloqueio')) ? 'bloqueio' : norm.includes('pontos de') ? 'atencao' : '';
     html += `<div class="agenda-card ${cls}">
-      <div class="a-eixo">${esc(eixoLabel)}</div>
+      <div class="a-eixo">${esc(r._eixo ? r._eixo.split('–')[0].split('-')[0].trim() : '')}</div>
       <div class="a-titulo">${esc(r.entrega || r.num)}</div>
-      <div class="a-footer">
-        <span class="a-prazo">📅 ${esc(r.prazo)}</span>
-        ${statusBadge(r.status)}
-      </div>
+      <div class="a-footer"><span class="a-prazo">📅 ${esc(r.prazo)}</span>${statusBadge(r.status)}</div>
     </div>`;
   });
-  html += '</div>';
-  container.innerHTML = html;
+  container.innerHTML = html + '</div>';
 }
 
-// ── PLANO DETALHADO ────────────────────────────────────────
+// ── PLANO ─────────────────────────────────────────────────
 function parsePlano(rows) {
-  planoData = [];
-  eixoOptions = [];
+  planoData = []; eixoOptions = [];
   let currentEixo = '';
   rows.forEach(r => {
-    const num     = clean(r['Nº']);
-    const entrega = clean(r['ENTREGA / AÇÃO']);
+    const num = clean(r['Nº']), entrega = clean(r['ENTREGA / AÇÃO']);
     if (num.startsWith('Eixo') || entrega.startsWith('Eixo')) {
       currentEixo = num.startsWith('Eixo') ? num : entrega;
       if (!eixoOptions.includes(currentEixo)) eixoOptions.push(currentEixo);
       planoData.push({ _eixo: currentEixo, _isHeader: true });
     } else if (num || entrega) {
-      planoData.push({
-        num, entrega,
-        prazo:      clean(r['PRAZO']),
-        status:     clean(r['STATUS']),
-        prioridade: clean(r['PRIORIDADE']),
-        _eixo:      currentEixo,
-        _isHeader:  false,
-      });
+      planoData.push({ num, entrega, prazo: clean(r['PRAZO']), status: clean(r['STATUS']),
+        prioridade: clean(r['PRIORIDADE']), _eixo: currentEixo, _isHeader: false });
     }
   });
   const sel = document.getElementById('filter-eixo');
@@ -625,30 +567,19 @@ function parsePlano(rows) {
 }
 
 function renderPlano() {
-  const filterEixo   = document.getElementById('filter-eixo').value;
-  const filterStatus = document.getElementById('filter-status-plano').value.toLowerCase();
+  const fe = document.getElementById('filter-eixo').value;
+  const fs = document.getElementById('filter-status-plano').value.toLowerCase();
   const tbody = document.getElementById('plano-tbody');
   tbody.innerHTML = '';
   let lastEixo = '';
-
   planoData.forEach(r => {
     if (r._isHeader) return;
-    if (filterEixo && r._eixo !== filterEixo) return;
-    if (filterStatus && normalizeStatus(r.status) !== filterStatus) return;
-    if (r._eixo !== lastEixo) {
-      lastEixo = r._eixo;
-      tbody.innerHTML += `<tr class="eixo-row"><td colspan="5">${esc(r._eixo)}</td></tr>`;
-    }
-    tbody.innerHTML += `<tr>
-      <td>${esc(r.num)}</td>
-      <td>${esc(r.entrega)}</td>
-      <td>${esc(r.prazo)}</td>
-      <td>${statusBadge(r.status)}</td>
-      <td>${esc(r.prioridade)}</td>
-    </tr>`;
+    if (fe && r._eixo !== fe) return;
+    if (fs && normalizeStatus(r.status) !== fs) return;
+    if (r._eixo !== lastEixo) { lastEixo = r._eixo; tbody.innerHTML += `<tr class="eixo-row"><td colspan="5">${esc(r._eixo)}</td></tr>`; }
+    tbody.innerHTML += `<tr><td>${esc(r.num)}</td><td>${esc(r.entrega)}</td><td>${esc(r.prazo)}</td><td>${statusBadge(r.status)}</td><td>${esc(r.prioridade)}</td></tr>`;
   });
-  if (!tbody.innerHTML)
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;padding:24px">Nenhum resultado.</td></tr>';
+  if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;padding:24px">Nenhum resultado.</td></tr>';
 }
 
 function resetFiltersPlano() {
@@ -657,41 +588,31 @@ function resetFiltersPlano() {
   renderPlano();
 }
 
-// ── PMO OPERACIONAL ────────────────────────────────────────
+// ── PMO ───────────────────────────────────────────────────
 function parsePmo(rows) {
   pmoData = [];
   let currentEixo = '';
-  const datePattern = /^\d{2}\/\d{2}\/\d{4}$/;
+  const dp = /^\d{2}\/\d{2}\/\d{4}$/;
   rows.forEach(r => {
-    const acao    = clean(r['Ação STF']);
-    const entrega = clean(r['Entrega Prioritária']);
-    if (datePattern.test(acao) && !entrega) return; // linha com data no lugar errado
+    const acao = clean(r['Ação STF']), entrega = clean(r['Entrega Prioritária']);
+    if (dp.test(acao) && !entrega) return;
     if (acao.startsWith('Eixo') || entrega.startsWith('Eixo')) {
       currentEixo = acao.startsWith('Eixo') ? acao : entrega;
       pmoData.push({ _eixo: currentEixo, _isHeader: true });
     } else if (acao || entrega) {
-      pmoData.push({
-        acao, entrega,
-        responsavel: clean(r['Responsável']),
-        prazo:       clean(r['Prazo']),
-        status:      clean(r['Status']),
-        comentario:  clean(r['Comentário / Próximos Passos']),
-        tipo:        clean(r['Tipo']).toLowerCase(),
-        _eixo:       currentEixo,
-        _isHeader:   false,
-      });
+      pmoData.push({ acao, entrega, responsavel: clean(r['Responsável']), prazo: clean(r['Prazo']),
+        status: clean(r['Status']), comentario: clean(r['Comentário / Próximos Passos']),
+        tipo: clean(r['Tipo']).toLowerCase(), _eixo: currentEixo, _isHeader: false });
     }
   });
 }
 
 function getActivePills() {
-  return Array.from(document.querySelectorAll('.pill[class*="active-"]'))
-    .map(b => normalizeStatus(b.dataset.status));
+  return Array.from(document.querySelectorAll('.pill[class*="active-"]')).map(b => normalizeStatus(b.dataset.status));
 }
 
 function togglePill(btn) {
-  const cls = 'active-' + btn.dataset.color;
-  btn.classList.toggle(cls);
+  btn.classList.toggle('active-' + btn.dataset.color);
   renderPmo();
 }
 
@@ -701,103 +622,107 @@ function renderPmo() {
   const tbody   = document.getElementById('pmo-tbody');
   tbody.innerHTML = '';
   let lastEixo = '';
-
   pmoData.forEach(r => {
     if (r._isHeader) return;
     const isSub = r.tipo === 'sub';
     if (!showSub && isSub) return;
     if (active.length > 0 && !active.includes(normalizeStatus(r.status))) return;
-    if (r._eixo !== lastEixo) {
-      lastEixo = r._eixo;
-      tbody.innerHTML += `<tr class="eixo-row"><td colspan="6">${esc(r._eixo)}</td></tr>`;
-    }
-    tbody.innerHTML += `<tr class="${isSub ? 'sub-row' : ''}">
-      <td>${esc(r.acao)}</td>
-      <td>${esc(r.entrega)}</td>
-      <td>${esc(r.responsavel)}</td>
-      <td>${esc(r.prazo)}</td>
-      <td>${statusBadge(r.status)}</td>
-      <td>${esc(r.comentario)}</td>
-    </tr>`;
+    if (r._eixo !== lastEixo) { lastEixo = r._eixo; tbody.innerHTML += `<tr class="eixo-row"><td colspan="6">${esc(r._eixo)}</td></tr>`; }
+    tbody.innerHTML += `<tr class="${isSub?'sub-row':''}">
+      <td>${esc(r.acao)}</td><td>${esc(r.entrega)}</td><td>${esc(r.responsavel)}</td>
+      <td>${esc(r.prazo)}</td><td>${statusBadge(r.status)}</td><td>${esc(r.comentario)}</td></tr>`;
   });
-
-  if (!tbody.innerHTML)
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:24px">Nenhum resultado.</td></tr>';
+  if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:24px">Nenhum resultado.</td></tr>';
 }
 
 function resetFiltersPmo() {
-  document.querySelectorAll('.pill').forEach(b =>
-    b.classList.remove('active-green','active-yellow','active-red','active-gray','active-blue'));
+  document.querySelectorAll('.pill').forEach(b => b.classList.remove('active-green','active-yellow','active-red','active-gray','active-blue'));
   document.getElementById('show-sub').checked = false;
   renderPmo();
 }
 
-// ── LOAD ALL ───────────────────────────────────────────────
+// ── BOAS PRÁTICAS ─────────────────────────────────────────
+const BP_DEFAULT = {};
+
+function initBp() {
+  document.querySelectorAll('[data-bp-id]').forEach(el => {
+    BP_DEFAULT[el.dataset.bpId] = el.innerHTML;
+    const saved = localStorage.getItem('bp_' + el.dataset.bpId);
+    if (saved !== null) el.innerHTML = saved;
+    el.addEventListener('input', () => {
+      localStorage.setItem('bp_' + el.dataset.bpId, el.innerHTML);
+    });
+  });
+}
+
+function resetBp() {
+  if (!confirm('Restaurar todo o conteúdo de Boas Práticas para o padrão? Suas edições serão perdidas.')) return;
+  document.querySelectorAll('[data-bp-id]').forEach(el => {
+    el.innerHTML = BP_DEFAULT[el.dataset.bpId];
+    localStorage.removeItem('bp_' + el.dataset.bpId);
+  });
+}
+
+function downloadHTML() {
+  // Capture current bp content into a serialized copy
+  const htmlEl = document.documentElement.cloneNode(true);
+  document.querySelectorAll('[data-bp-id]').forEach(el => {
+    const clone = htmlEl.querySelector('[data-bp-id="' + el.dataset.bpId + '"]');
+    if (clone) clone.innerHTML = el.innerHTML;
+  });
+  // Remove runtime state
+  htmlEl.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  htmlEl.querySelector('#tab-metas').classList.add('active');
+  htmlEl.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  htmlEl.querySelector('.tab-btn').classList.add('active');
+
+  const blob = new Blob(['<!DOCTYPE html>\n' + htmlEl.outerHTML], { type: 'text/html' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'painel-car-para.html'; a.click();
+}
+
+// ── LOAD ALL ──────────────────────────────────────────────
 async function loadAll() {
-  let anyFromCache = false;
-  let oldestCacheTs = null;
-  let anyError = false;
+  let anyFromCache = false, oldestTs = null;
 
-  // METAS
-  try {
-    const { data, fromCache, ts } = await fetchSheet('Metas');
-    if (fromCache) { anyFromCache = true; if (!oldestCacheTs || ts < oldestCacheTs) oldestCacheTs = ts; }
-    renderMetas(data);
-    document.getElementById('loading-metas').style.display = 'none';
-    document.getElementById('metas-content').style.display = 'block';
-  } catch(e) {
-    anyError = true;
-    document.getElementById('loading-metas').innerHTML = `<div class="error-msg">⚠️ Erro ao carregar metas: ${e.message}</div>`;
+  async function load(name, onSuccess, onError) {
+    try {
+      const { data, fromCache, ts } = await fetchSheet(name);
+      if (fromCache) { anyFromCache = true; if (!oldestTs || ts < oldestTs) oldestTs = ts; }
+      onSuccess(data);
+    } catch(e) { onError(e); }
   }
 
-  // PLANO
-  try {
-    const { data, fromCache, ts } = await fetchSheet('Plano Detalhado');
-    if (fromCache) { anyFromCache = true; if (!oldestCacheTs || ts < oldestCacheTs) oldestCacheTs = ts; }
-    parsePlano(data);
-    renderPlano();
-    renderEixoStats();
-    renderAgendaMes();
-    document.getElementById('loading-plano').style.display = 'none';
-    document.getElementById('plano-content').style.display = 'block';
-  } catch(e) {
-    anyError = true;
-    document.getElementById('loading-plano').innerHTML = `<div class="error-msg">⚠️ Erro ao carregar plano: ${e.message}</div>`;
-    document.getElementById('eixo-stats').innerHTML = '<div class="empty-state">Dados indisponíveis.</div>';
-    document.getElementById('agenda-mes').innerHTML = '<div class="empty-state">Dados indisponíveis.</div>';
-  }
+  await load('Metas',
+    data => { renderMetas(data); document.getElementById('loading-metas').style.display='none'; document.getElementById('metas-content').style.display='block'; },
+    e    => { document.getElementById('loading-metas').innerHTML=`<div class="error-msg">⚠️ Erro ao carregar metas: ${e.message}</div>`; }
+  );
 
-  // PMO
-  try {
-    const { data, fromCache, ts } = await fetchSheet('PMO Operacional');
-    if (fromCache) { anyFromCache = true; if (!oldestCacheTs || ts < oldestCacheTs) oldestCacheTs = ts; }
-    parsePmo(data);
-    renderPmo();
-    document.getElementById('loading-pmo').style.display = 'none';
-    document.getElementById('pmo-content').style.display = 'block';
-  } catch(e) {
-    anyError = true;
-    document.getElementById('loading-pmo').innerHTML = `<div class="error-msg">⚠️ Erro ao carregar PMO: ${e.message}</div>`;
-  }
+  await load('Plano Detalhado',
+    data => { parsePlano(data); renderPlano(); renderEixoStats(); renderAgendaMes();
+              document.getElementById('loading-plano').style.display='none'; document.getElementById('plano-content').style.display='block'; },
+    e    => { document.getElementById('loading-plano').innerHTML=`<div class="error-msg">⚠️ Erro: ${e.message}</div>`;
+              document.getElementById('eixo-stats').innerHTML='<div class="empty-state">Dados indisponíveis.</div>';
+              document.getElementById('agenda-mes').innerHTML='<div class="empty-state">Dados indisponíveis.</div>'; }
+  );
 
-  // header status
-  const now = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+  await load('PMO Operacional',
+    data => { parsePmo(data); renderPmo(); document.getElementById('loading-pmo').style.display='none'; document.getElementById('pmo-content').style.display='block'; },
+    e    => { document.getElementById('loading-pmo').innerHTML=`<div class="error-msg">⚠️ Erro: ${e.message}</div>`; }
+  );
+
+  const now = new Date().toLocaleString('pt-BR', { dateStyle:'short', timeStyle:'short' });
   const badge = document.getElementById('cache-badge');
-
-  if (anyFromCache && oldestCacheTs) {
-    document.getElementById('last-updated').textContent = `Dados do cache (${cacheAge(oldestCacheTs)})`;
-    badge.textContent = '⚠️ Sem conexão — dados salvos';
-    badge.className = 'cache-badge cached';
-  } else if (anyError) {
-    document.getElementById('last-updated').textContent = `Atualizado em: ${now} (com erros)`;
-    badge.textContent = '⚠️ Erro parcial';
+  if (anyFromCache && oldestTs) {
+    document.getElementById('last-updated').textContent = `Dados salvos (${cacheAge(oldestTs)})`;
+    badge.textContent = '⚠️ Sem conexão — exibindo dados salvos';
     badge.className = 'cache-badge cached';
   } else {
     document.getElementById('last-updated').textContent = `Atualizado em: ${now}`;
-    badge.style.display = 'none';
   }
 }
 
+initBp();
 loadAll();
 </script>
 </body>
